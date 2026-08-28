@@ -62,6 +62,15 @@
   .course-row .date-field{flex:0 1 130px; min-width:100px;}
   .course-row .date-field input{padding-left:10px; font-size:12px;}
 
+  .sync-row{display:flex; gap:8px; margin-top:8px;}
+  .sync-row input{flex:1; min-width:0; font-size:12.5px; text-transform:uppercase; letter-spacing:0.04em;}
+  .sync-row input::placeholder{text-transform:none; letter-spacing:normal;}
+  .sync-row button{flex:none; width:auto; padding:0 14px; background:var(--moss-deep); border-color:var(--moss); color:var(--paper); font-size:12.5px;}
+  .room-status{display:flex; align-items:center; gap:7px; margin-top:8px; font-size:11.5px; color:var(--muted); text-shadow:0 1px 6px rgba(0,0,0,0.6);}
+  .room-dot{width:7px; height:7px; border-radius:50%; background:var(--faint); flex:none;}
+  .room-dot.live{background:var(--moss); box-shadow:0 0 0 3px rgba(139,191,106,0.25);}
+  .room-dot.error{background:var(--brick);}
+
   /* ---------- FIELDS ---------- */
   input[type=text], input[type=number], input[type=date]{
     background:var(--surface); border:1px solid var(--line-strong); color:var(--ink);
@@ -233,6 +242,12 @@
         <input type="date" id="roundDate">
       </div>
     </div>
+
+    <div class="sync-row">
+      <input type="text" id="roomCode" placeholder="Istabas kods (tukšs = izveidot jaunu)" maxlength="10">
+      <button type="button" id="roomConnect">Sinhronizēt</button>
+    </div>
+    <div class="room-status" id="roomStatus"><span class="room-dot" id="roomDot"></span><span id="roomStatusText">Nav savienots — rezultāti tikai šajā ierīcē</span></div>
   </div>
 </div>
 
@@ -295,7 +310,19 @@
   </button>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+let db = null;
+try{
+  if(firebaseConfig && firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('IELĪMĒ') === -1){
+    const fbApp = initializeApp(firebaseConfig);
+    db = getFirestore(fbApp);
+  }
+}catch(e){ console.warn('Firebase nav konfigurēts vai neizdevās ielādēt.', e); }
+
 const DEFAULT_HOLES = 18;
 const MAX_PLAYERS = 6;
 const MAX_HOLES = 27;
@@ -308,7 +335,7 @@ function defaultCurrent(){
   return { location:'Riekstukalns', date:todayISO(), names:['Spēlētājs 1','Spēlētājs 2','Spēlētājs 3'],
     par:Array(DEFAULT_HOLES).fill(3), scores:[Array(DEFAULT_HOLES).fill(null),Array(DEFAULT_HOLES).fill(null),Array(DEFAULT_HOLES).fill(null)] };
 }
-function defaultState(){ return { current: defaultCurrent(), rounds: [] }; }
+function defaultState(){ return { current: defaultCurrent(), rounds: [], roomCode: null }; }
 
 function load(){
   try{
@@ -321,12 +348,88 @@ function load(){
       d.current.scores = d.current.names.map(()=>Array(d.current.par.length).fill(null));
     }
     d.rounds = Array.isArray(parsed.rounds) ? parsed.rounds : [];
+    d.roomCode = parsed.roomCode || null;
     return d;
   }catch(e){ return defaultState(); }
 }
-function persist(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+function persist(){
+  localStorage.setItem(KEY, JSON.stringify(state));
+  if(state.roomCode) scheduleSync();
+}
 
 let state = load();
+
+/* ---------------- LIVE ROOM SYNC ---------------- */
+let unsubscribeRoom = null;
+let lastPushed = null;
+let syncTimer = null;
+
+function roomRef(code){ return doc(db, 'rooms', code); }
+
+function setRoomStatus(mode, text){
+  const dot = document.getElementById('roomDot');
+  const label = document.getElementById('roomStatusText');
+  dot.classList.remove('live','error');
+  if(mode==='live') dot.classList.add('live');
+  if(mode==='error') dot.classList.add('error');
+  label.textContent = text;
+}
+
+function pushCurrent(){
+  if(!db || !state.roomCode) return;
+  const payload = JSON.stringify(state.current);
+  if(payload === lastPushed) return;
+  lastPushed = payload;
+  setDoc(roomRef(state.roomCode), { current: state.current, updatedAt: Date.now() }, { merge:true })
+    .then(()=> setRoomStatus('live', 'Sinhronizēts — istaba ' + state.roomCode))
+    .catch((e)=>{ console.warn(e); setRoomStatus('error', 'Sinhronizācijas kļūda — pārbaudi Firebase iestatījumus'); });
+}
+function scheduleSync(){
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(pushCurrent, 350);
+}
+
+function connectRoom(code){
+  if(!db){ setRoomStatus('error', 'Firebase nav konfigurēts (skat. firebase-config.js)'); return; }
+  if(unsubscribeRoom){ unsubscribeRoom(); unsubscribeRoom = null; }
+  state.roomCode = code;
+  document.getElementById('roomCode').value = code;
+  localStorage.setItem(KEY, JSON.stringify(state));
+  setRoomStatus('live', 'Savienojas ar istabu ' + code + '…');
+  let first = true;
+  unsubscribeRoom = onSnapshot(roomRef(code), (snap)=>{
+    if(!snap.exists()){
+      if(first) pushCurrent();
+      setRoomStatus('live', 'Izveidota jauna istaba ' + code);
+      first = false;
+      return;
+    }
+    first = false;
+    const data = snap.data();
+    const json = JSON.stringify(data.current);
+    if(json === lastPushed){ setRoomStatus('live', 'Sinhronizēts — istaba ' + code); return; }
+    state.current = data.current;
+    localStorage.setItem(KEY, JSON.stringify(state));
+    renderPlayHeader(); renderPlayers(); buildHoles(); buildSummary();
+    setRoomStatus('live', 'Sinhronizēts — istaba ' + code);
+  }, (err)=>{
+    console.warn(err);
+    setRoomStatus('error', 'Nevar savienoties — pārbaudi Firestore Security Rules');
+  });
+}
+function disconnectRoom(){
+  if(unsubscribeRoom){ unsubscribeRoom(); unsubscribeRoom = null; }
+  state.roomCode = null;
+  document.getElementById('roomCode').value = '';
+  localStorage.setItem(KEY, JSON.stringify(state));
+  setRoomStatus('idle', 'Nav savienots — rezultāti tikai šajā ierīcē');
+}
+function randomCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let out = '';
+  for(let i=0;i<6;i++) out += chars[Math.floor(Math.random()*chars.length)];
+  return out;
+}
 
 function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
 function escapeAttr(s){ return (s??'').replace(/"/g,'&quot;'); }
@@ -497,6 +600,18 @@ holesEl.addEventListener('input',(e)=>{
 document.getElementById('location').addEventListener('input',(e)=>{ state.current.location=e.target.value; document.getElementById('heroTitle').textContent=e.target.value||'Riekstukalns'; persist(); });
 document.getElementById('roundDate').addEventListener('input',(e)=>{ state.current.date=e.target.value; persist(); });
 
+document.getElementById('roomConnect').addEventListener('click', ()=>{
+  if(state.roomCode){ disconnectRoom(); updateRoomButton(); return; }
+  const input = document.getElementById('roomCode');
+  const raw = input.value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  const code = raw || randomCode();
+  connectRoom(code);
+  updateRoomButton();
+});
+function updateRoomButton(){
+  document.getElementById('roomConnect').textContent = state.roomCode ? 'Atvienoties' : 'Sinhronizēt';
+}
+
 document.getElementById('resetScores').addEventListener('click',()=>{
   const c = state.current;
   c.scores = c.names.map(()=>Array(c.par.length).fill(null));
@@ -652,6 +767,13 @@ buildHoles();
 buildSummary();
 renderHistory();
 renderStats();
+updateRoomButton();
+if(state.roomCode){
+  document.getElementById('roomCode').value = state.roomCode;
+  connectRoom(state.roomCode);
+} else {
+  setRoomStatus('idle', 'Nav savienots — rezultāti tikai šajā ierīcē');
+}
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });

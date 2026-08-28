@@ -1,5 +1,5 @@
-const CACHE = 'riekstukalns-v5';
-const ASSETS = ['./index.html', './manifest.json', './icon-192.png', './icon-512.png', './hero.jpg'];
+const CACHE = 'riekstukalns-v6';
+const ASSETS = ['./index.html', './manifest.json', './icon-192.png', './icon-512.png', './hero.jpg', './firebase-config.js'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)));
