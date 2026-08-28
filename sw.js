@@ -1,4 +1,4 @@
-const CACHE = 'riekstukalns-v3';
+const CACHE = 'riekstukalns-v5';
 const ASSETS = ['./index.html', './manifest.json', './icon-192.png', './icon-512.png', './hero.jpg'];
 
 self.addEventListener('install', (e) => {

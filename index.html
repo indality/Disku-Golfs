@@ -56,9 +56,11 @@
   .subline{color:var(--muted); font-size:13.5px; margin:0; text-shadow:0 1px 8px rgba(0,0,0,0.6);}
 
   .course-row{display:flex; gap:8px; margin-top:1.1rem; flex-wrap:wrap;}
-  .course-row .field{flex:1; min-width:130px; position:relative;}
+  .course-row .field{flex:1; min-width:0; position:relative;}
   .course-row .field svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--faint); pointer-events:none; z-index:1;}
   .course-row .field input{padding-left:36px;}
+  .course-row .date-field{flex:0 1 130px; min-width:100px;}
+  .course-row .date-field input{padding-left:10px; font-size:12px;}
 
   /* ---------- FIELDS ---------- */
   input[type=text], input[type=number], input[type=date]{
@@ -75,16 +77,22 @@
   .view.active{display:block;}
 
   /* ---------- PLAYERS ---------- */
-  .players{display:flex; gap:8px; margin:1.5rem 0 0.9rem;}
-  .player-field{flex:1; min-width:0;}
-  .player-field label{display:block; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--faint); margin-bottom:5px; font-weight:600;}
-  .player-field input{font-family:'Oswald', sans-serif; font-weight:500; font-size:14px;}
-  .player-field.p1 input{border-color:rgba(139,191,106,0.35);}
-  .player-field.p2 input{border-color:rgba(207,154,62,0.35);}
-  .player-field.p3 input{border-color:rgba(194,86,79,0.35);}
+  .players{display:flex; flex-wrap:wrap; gap:8px; margin:1.5rem 0 0.6rem;}
+  .player-field{flex:1 1 100px; min-width:100px;}
+  .player-field-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;}
+  .player-field label{font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--faint); font-weight:600;}
+  .player-remove{flex:none; width:20px; height:20px; border-radius:50%; padding:0; background:transparent; border:1px solid var(--line-strong); color:var(--faint); font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center;}
+  .player-field input{font-family:'Oswald', sans-serif; font-weight:500; font-size:14px; border-color:var(--pcolor, var(--line-strong));}
+  .add-row-btn{width:100%; margin-bottom:0.4rem; border:1px dashed var(--line-strong); background:transparent; color:var(--muted); font-size:12.5px; height:36px;}
 
   .section-label{display:flex; align-items:center; gap:10px; margin:1.7rem 0 0.7rem; font-family:'Oswald', sans-serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-weight:500;}
   .section-label::after{content:""; flex:1; height:1px; background:var(--line);}
+  .section-header{display:flex; align-items:center; justify-content:space-between; margin:1.7rem 0 0.7rem; padding-bottom:0.6rem; border-bottom:1px solid var(--line);}
+  .section-header .label-text{font-family:'Oswald', sans-serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-weight:500;}
+  .stepper{display:flex; align-items:center; gap:10px;}
+  .stepper button{width:26px; height:26px; border-radius:50%; padding:0; font-size:15px; line-height:1; flex:none; background:var(--surface); border:1px solid var(--line-strong); color:var(--ink);}
+  .stepper button:disabled{opacity:0.35;}
+  .stepper span{font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700; color:var(--paper); min-width:20px; text-align:center;}
 
   /* ---------- HOLE LIST ---------- */
   .holes{display:flex; flex-direction:column; gap:6px;}
@@ -221,8 +229,8 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
         <input type="text" id="location" placeholder="Lokācija (piem. Riekstukalns)">
       </div>
-      <div class="field" style="flex:0 0 140px; min-width:120px;">
-        <input type="date" id="roundDate" style="padding-left:10px;">
+      <div class="field date-field">
+        <input type="date" id="roundDate">
       </div>
     </div>
   </div>
@@ -232,14 +240,18 @@
 
   <!-- ================= PLAY VIEW ================= -->
   <section class="view active" id="view-play">
-    <div class="players">
-      <div class="player-field p1"><label>Spēlētājs 1</label><input type="text" id="p1" value="Spēlētājs 1"></div>
-      <div class="player-field p2"><label>Spēlētājs 2</label><input type="text" id="p2" value="Spēlētājs 2"></div>
-      <div class="player-field p3"><label>Spēlētājs 3</label><input type="text" id="p3" value="Spēlētājs 3"></div>
-    </div>
+    <div class="players" id="playersRow"></div>
+    <button type="button" id="addPlayer" class="add-row-btn">+ Pievienot spēlētāju</button>
 
-    <div class="section-label">Bedrītes</div>
-    <div class="col-labels"><span>Bed.</span><span>Par</span><span id="cl1">P1</span><span id="cl2">P2</span><span id="cl3">P3</span></div>
+    <div class="section-header">
+      <span class="label-text">Bedrītes</span>
+      <div class="stepper">
+        <button type="button" id="holesMinus" aria-label="Mazāk bedrīšu">−</button>
+        <span id="holesCount">18</span>
+        <button type="button" id="holesPlus" aria-label="Vairāk bedrīšu">+</button>
+      </div>
+    </div>
+    <div class="col-labels" id="colLabels"></div>
     <div class="holes" id="holes"></div>
 
     <div class="section-label">Kopā</div>
@@ -284,14 +296,17 @@
 </div>
 
 <script>
-const HOLES = 18;
-const KEY = 'riekstukalns-app-v2';
+const DEFAULT_HOLES = 18;
+const MAX_PLAYERS = 6;
+const MAX_HOLES = 27;
+const KEY = 'riekstukalns-app-v3';
+const PLAYER_COLORS = ['#8bbf6a','#cf9a3e','#c2564f','#8bbf6a','#cf9a3e','#c2564f'];
 
 function todayISO(){ return new Date().toISOString().slice(0,10); }
 
 function defaultCurrent(){
   return { location:'Riekstukalns', date:todayISO(), names:['Spēlētājs 1','Spēlētājs 2','Spēlētājs 3'],
-    par:Array(HOLES).fill(3), scores:[Array(HOLES).fill(null),Array(HOLES).fill(null),Array(HOLES).fill(null)] };
+    par:Array(DEFAULT_HOLES).fill(3), scores:[Array(DEFAULT_HOLES).fill(null),Array(DEFAULT_HOLES).fill(null),Array(DEFAULT_HOLES).fill(null)] };
 }
 function defaultState(){ return { current: defaultCurrent(), rounds: [] }; }
 
@@ -302,6 +317,9 @@ function load(){
     const parsed = JSON.parse(raw);
     const d = defaultState();
     d.current = Object.assign(d.current, parsed.current||{});
+    if(!Array.isArray(d.current.scores) || d.current.scores.length !== d.current.names.length){
+      d.current.scores = d.current.names.map(()=>Array(d.current.par.length).fill(null));
+    }
     d.rounds = Array.isArray(parsed.rounds) ? parsed.rounds : [];
     return d;
   }catch(e){ return defaultState(); }
@@ -311,19 +329,23 @@ function persist(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 let state = load();
 
 function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
+function escapeAttr(s){ return (s??'').replace(/"/g,'&quot;'); }
 function fmtDiff(d){ if(d===0) return 'E'; return d>0 ? '+'+d : String(d); }
 function fmtDate(iso){
   if(!iso) return '';
   const [y,m,d] = iso.split('-');
   return d+'.'+m+'.'+y;
 }
+function gridCols(n){ return '32px 42px repeat('+n+', 1fr)'; }
 
 /* ---------------- compute helpers ---------------- */
 function computeTotals(round){
-  const totals=[0,0,0], pars=[0,0,0], any=[false,false,false];
-  for(let p=0;p<3;p++){
-    for(let i=0;i<HOLES;i++){
-      const v = round.scores[p][i];
+  const N = round.names.length;
+  const totals=Array(N).fill(0), pars=Array(N).fill(0), any=Array(N).fill(false);
+  for(let p=0;p<N;p++){
+    const row = round.scores[p] || [];
+    for(let i=0;i<round.par.length;i++){
+      const v = row[i];
       if(v!==null && v!==undefined && !isNaN(v)){ totals[p]+=v; pars[p]+=round.par[i]; any[p]=true; }
     }
   }
@@ -336,31 +358,59 @@ function computeTotals(round){
 }
 
 /* ---------------- PLAY VIEW ---------------- */
+const playersRowEl = document.getElementById('playersRow');
+const colLabelsEl = document.getElementById('colLabels');
 const holesEl = document.getElementById('holes');
 const summaryEl = document.getElementById('summary');
+const holesCountEl = document.getElementById('holesCount');
 
-function buildHoles(){
-  holesEl.innerHTML='';
+function renderPlayers(){
   const c = state.current;
-  for(let i=0;i<HOLES;i++){
+  playersRowEl.innerHTML = c.names.map((name,idx)=>
+    '<div class="player-field" style="--pcolor:'+PLAYER_COLORS[idx%PLAYER_COLORS.length]+'55">'+
+      '<div class="player-field-head"><label>Spēlētājs '+(idx+1)+'</label>'+
+      (c.names.length>1 ? '<button type="button" class="player-remove" data-idx="'+idx+'" aria-label="Noņemt spēlētāju">×</button>' : '')+
+      '</div>'+
+      '<input type="text" data-idx="'+idx+'" data-role="pname" value="'+escapeAttr(name)+'">'+
+    '</div>'
+  ).join('');
+  document.getElementById('addPlayer').style.display = c.names.length>=MAX_PLAYERS ? 'none' : '';
+}
+function updateColLabels(){
+  const c = state.current;
+  colLabelsEl.style.gridTemplateColumns = gridCols(c.names.length);
+  colLabelsEl.innerHTML = '<span>Bed.</span><span>Par</span>' + c.names.map(n=>'<span>'+escapeHtml((n||'').slice(0,8))+'</span>').join('');
+}
+function buildHoles(){
+  const c = state.current;
+  const N = c.names.length;
+  updateColLabels();
+  holesCountEl.textContent = c.par.length;
+  document.getElementById('holesMinus').disabled = c.par.length<=1;
+  document.getElementById('holesPlus').disabled = c.par.length>=MAX_HOLES;
+  holesEl.innerHTML='';
+  for(let i=0;i<c.par.length;i++){
     const row=document.createElement('div');
     row.className='hole-row';
+    row.style.gridTemplateColumns = gridCols(N);
+    let scoreCells='';
+    for(let p=0;p<N;p++){
+      scoreCells += '<div class="score-field even" data-cell="'+p+'-'+i+'"><input type="number" inputmode="numeric" placeholder="–" data-role="score" data-p="'+p+'" data-i="'+i+'"></div>';
+    }
     row.innerHTML =
       '<div class="hole-badge">'+(i+1)+'</div>'+
       '<div class="par-field"><input type="number" inputmode="numeric" data-role="par" data-i="'+i+'" value="'+c.par[i]+'"></div>'+
-      '<div class="score-field even" data-cell="0-'+i+'"><input type="number" inputmode="numeric" placeholder="–" data-role="score" data-p="0" data-i="'+i+'"></div>'+
-      '<div class="score-field even" data-cell="1-'+i+'"><input type="number" inputmode="numeric" placeholder="–" data-role="score" data-p="1" data-i="'+i+'"></div>'+
-      '<div class="score-field even" data-cell="2-'+i+'"><input type="number" inputmode="numeric" placeholder="–" data-role="score" data-p="2" data-i="'+i+'"></div>';
+      scoreCells;
     holesEl.appendChild(row);
   }
   syncScoreInputs();
 }
 function syncScoreInputs(){
   const c = state.current;
-  for(let p=0;p<3;p++) for(let i=0;i<HOLES;i++){
+  for(let p=0;p<c.names.length;p++) for(let i=0;i<c.par.length;i++){
     const v = c.scores[p][i];
     const input = holesEl.querySelector('input[data-role="score"][data-p="'+p+'"][data-i="'+i+'"]');
-    if(input) input.value = v===null?'':v;
+    if(input) input.value = v===null||v===undefined?'':v;
     const cell = holesEl.querySelector('[data-cell="'+p+'-'+i+'"]');
     if(cell){
       cell.classList.remove('under','over','even');
@@ -375,7 +425,7 @@ function buildSummary(){
   const c = state.current;
   const r = computeTotals(c);
   summaryEl.innerHTML='';
-  for(let p=0;p<3;p++){
+  for(let p=0;p<c.names.length;p++){
     const isLeader = r.anyScored && r.winners.includes(p);
     const card=document.createElement('div');
     card.className='summary-card'+(isLeader?' leader':'');
@@ -392,27 +442,64 @@ function renderPlayHeader(){
   document.getElementById('location').value = c.location;
   document.getElementById('roundDate').value = c.date;
   document.getElementById('heroTitle').textContent = c.location || 'Riekstukalns';
-  ['p1','p2','p3'].forEach((id,idx)=>{ document.getElementById(id).value = c.names[idx]; document.getElementById('cl'+(idx+1)).textContent = (c.names[idx]||'P'+(idx+1)).slice(0,10); });
 }
 
+/* ---- events: players ---- */
+document.getElementById('addPlayer').addEventListener('click', ()=>{
+  const c = state.current;
+  if(c.names.length>=MAX_PLAYERS) return;
+  c.names.push('Spēlētājs '+(c.names.length+1));
+  c.scores.push(Array(c.par.length).fill(null));
+  persist(); renderPlayers(); buildHoles(); buildSummary();
+});
+playersRowEl.addEventListener('click',(e)=>{
+  const btn = e.target.closest('.player-remove');
+  if(!btn) return;
+  const c = state.current;
+  if(c.names.length<=1) return;
+  const idx = +btn.dataset.idx;
+  c.names.splice(idx,1);
+  c.scores.splice(idx,1);
+  persist(); renderPlayers(); buildHoles(); buildSummary();
+});
+playersRowEl.addEventListener('input',(e)=>{
+  const t = e.target;
+  if(t.dataset.role!=='pname') return;
+  const idx = +t.dataset.idx;
+  state.current.names[idx] = t.value;
+  updateColLabels(); buildSummary(); persist();
+});
+
+/* ---- events: holes count ---- */
+document.getElementById('holesMinus').addEventListener('click', ()=>{
+  const c = state.current;
+  if(c.par.length<=1) return;
+  c.par.pop();
+  c.scores.forEach(a=>a.pop());
+  persist(); buildHoles(); buildSummary();
+});
+document.getElementById('holesPlus').addEventListener('click', ()=>{
+  const c = state.current;
+  if(c.par.length>=MAX_HOLES) return;
+  c.par.push(3);
+  c.scores.forEach(a=>a.push(null));
+  persist(); buildHoles(); buildSummary();
+});
+
+/* ---- events: hole rows (par + score inputs) ---- */
 holesEl.addEventListener('input',(e)=>{
   const t=e.target; const c=state.current;
   if(t.dataset.role==='par'){ const i=+t.dataset.i; const val=parseInt(t.value,10); c.par[i]=isNaN(val)?3:val; }
   else if(t.dataset.role==='score'){ const p=+t.dataset.p,i=+t.dataset.i; const val=t.value===''?null:parseInt(t.value,10); c.scores[p][i]=(val===null||isNaN(val))?null:val; }
   syncScoreInputs(); buildSummary(); persist();
 });
-['p1','p2','p3'].forEach((id,idx)=>{
-  document.getElementById(id).addEventListener('input',(e)=>{
-    state.current.names[idx]=e.target.value;
-    document.getElementById('cl'+(idx+1)).textContent=(e.target.value||'P'+(idx+1)).slice(0,10);
-    buildSummary(); persist();
-  });
-});
+
 document.getElementById('location').addEventListener('input',(e)=>{ state.current.location=e.target.value; document.getElementById('heroTitle').textContent=e.target.value||'Riekstukalns'; persist(); });
 document.getElementById('roundDate').addEventListener('input',(e)=>{ state.current.date=e.target.value; persist(); });
 
 document.getElementById('resetScores').addEventListener('click',()=>{
-  state.current.scores=[Array(HOLES).fill(null),Array(HOLES).fill(null),Array(HOLES).fill(null)];
+  const c = state.current;
+  c.scores = c.names.map(()=>Array(c.par.length).fill(null));
   syncScoreInputs(); buildSummary(); persist();
 });
 document.getElementById('saveRound').addEventListener('click',()=>{
@@ -429,11 +516,15 @@ document.getElementById('saveRound').addEventListener('click',()=>{
     totals: r.totals, diffs: r.diffs, winners: r.winners
   };
   state.rounds.unshift(round);
-  state.current = defaultCurrent();
-  state.current.location = round.location;
-  state.current.names = round.names.slice();
+  state.current = {
+    location: round.location,
+    date: todayISO(),
+    names: round.names.slice(),
+    par: round.par.slice(),
+    scores: round.names.map(()=>Array(round.par.length).fill(null))
+  };
   persist();
-  renderPlayHeader(); buildHoles(); buildSummary();
+  renderPlayHeader(); renderPlayers(); buildHoles(); buildSummary();
   renderHistory(); renderStats();
   switchView('history');
 });
@@ -447,8 +538,8 @@ function renderHistory(){
     const card=document.createElement('div');
     card.className='round-card';
     let playersHtml='';
-    for(let p=0;p<3;p++){
-      if(round.totals[p]===0 && round.diffs[p]===null) continue;
+    for(let p=0;p<round.names.length;p++){
+      if(round.diffs[p]===null || round.diffs[p]===undefined) continue;
       const win = round.winners.includes(p);
       playersHtml += '<div class="round-player'+(win?' win':'')+'"><span class="nm">'+(win?'●':'')+escapeHtml(round.names[p])+'</span>'+
         '<span class="vals"><span>'+round.totals[p]+'</span><span>'+fmtDiff(round.diffs[p])+'</span></span></div>';
@@ -456,7 +547,7 @@ function renderHistory(){
     card.innerHTML =
       '<div class="round-head"><div><div class="round-loc">'+
       '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>'+
-      escapeHtml(round.location)+'</div><div class="round-date">'+fmtDate(round.date)+'</div></div>'+
+      escapeHtml(round.location)+'</div><div class="round-date">'+fmtDate(round.date)+' · '+round.par.length+' bedrītes</div></div>'+
       '<button class="round-del" data-id="'+round.id+'" aria-label="Dzēst raundu"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>'+
       '<div class="round-players">'+playersHtml+'</div>';
     list.appendChild(card);
@@ -484,7 +575,7 @@ function renderStats(){
 
   const players = {};
   state.rounds.forEach(round=>{
-    for(let p=0;p<3;p++){
+    for(let p=0;p<round.names.length;p++){
       const name = (round.names[p]||'').trim();
       if(!name) continue;
       if(round.diffs[p]===null || round.diffs[p]===undefined) continue;
@@ -520,7 +611,7 @@ function renderStats(){
     const key = round.location || 'Nezināma';
     if(!locs[key]) locs[key] = { name:key, rounds:0, diffs:[], best:Infinity, bestWho:'' };
     locs[key].rounds++;
-    for(let p=0;p<3;p++){
+    for(let p=0;p<round.names.length;p++){
       if(round.diffs[p]===null||round.diffs[p]===undefined) continue;
       locs[key].diffs.push(round.diffs[p]);
       if(round.diffs[p] < locs[key].best){ locs[key].best = round.diffs[p]; locs[key].bestWho = round.names[p]; }
@@ -556,6 +647,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 
 /* ---------------- INIT ---------------- */
 renderPlayHeader();
+renderPlayers();
 buildHoles();
 buildSummary();
 renderHistory();
