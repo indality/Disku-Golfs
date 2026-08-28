@@ -33,33 +33,32 @@
     min-height:100vh; padding-bottom:calc(78px + var(--safe-b));
     -webkit-tap-highlight-color:transparent;
   }
-  .wrap{max-width:640px;margin:0 auto;padding:0 1.1rem;}
+  .wrap{max-width:640px;margin:0 auto;padding:0 1.1rem; position:relative; z-index:1;}
+  body > .wrap{background:var(--bg);}
   @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
 
   /* ---------- HERO ---------- */
   .hero{
-    background:linear-gradient(180deg, rgba(139,191,106,0.10), transparent 75%), var(--bg-hero);
+    background-image:url('hero.jpg');
+    background-size:cover;
+    background-position:center 15%;
+    background-color:var(--bg-hero);
     border-bottom:1px solid var(--line);
-    padding:1.8rem 0 1.3rem;
+    min-height:400px;
+    display:flex; align-items:flex-end;
+    padding:0;
     position:relative; overflow:hidden;
   }
-  .hero-arc{position:absolute; top:-20px; left:-20px; opacity:0.55; pointer-events:none;}
-  .hero::after{
-    content:""; position:absolute; inset:0;
-    background-image:radial-gradient(circle, rgba(185,196,179,0.30) 1px, transparent 1px);
-    background-size:22px 22px;
-    mask-image:linear-gradient(180deg, transparent, rgba(0,0,0,0.45) 55%, transparent);
-    opacity:0.35; pointer-events:none;
-  }
-  .hero-inner{position:relative;}
-  .eyebrow{display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--moss); font-weight:600; margin-bottom:0.5rem;}
-  h1{font-family:'Oswald', sans-serif; font-weight:700; font-size:clamp(1.9rem, 8vw, 2.4rem); letter-spacing:-0.01em; margin:0 0 0.3rem; color:var(--paper); line-height:1.02;}
-  .subline{color:var(--muted); font-size:13.5px; margin:0;}
+  .hero-arc{position:absolute; top:14px; left:-20px; opacity:0.5; pointer-events:none; z-index:1;}
+  .hero-inner{position:relative; z-index:1; width:100%; padding:2.2rem 0 1.4rem;}
+  .eyebrow{display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--moss); font-weight:600; margin-bottom:0.5rem; text-shadow:0 1px 8px rgba(0,0,0,0.6);}
+  h1{font-family:'Oswald', sans-serif; font-weight:700; font-size:clamp(1.9rem, 8vw, 2.4rem); letter-spacing:-0.01em; margin:0 0 0.3rem; color:var(--paper); line-height:1.02; text-shadow:0 2px 14px rgba(0,0,0,0.55);}
+  .subline{color:var(--muted); font-size:13.5px; margin:0; text-shadow:0 1px 8px rgba(0,0,0,0.6);}
 
   .course-row{display:flex; gap:8px; margin-top:1.1rem; flex-wrap:wrap;}
   .course-row .field{flex:1; min-width:130px; position:relative;}
-  .course-row .field svg{position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--faint); pointer-events:none;}
-  .course-row input{padding-left:30px;}
+  .course-row .field svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--faint); pointer-events:none; z-index:1;}
+  .course-row .field input{padding-left:36px;}
 
   /* ---------- FIELDS ---------- */
   input[type=text], input[type=number], input[type=date]{
@@ -164,10 +163,46 @@
   .tab-btn.active{color:var(--moss);}
   .tab-btn svg{width:20px; height:20px;}
 
+  @media (min-width:700px){ .hero{min-height:480px;} }
   footer{text-align:center; margin-top:2rem; font-size:11px; color:var(--faint);}
+
+  /* ---------- SIDE ART (wide screens only) ---------- */
+  .side-art{position:fixed; top:0; bottom:0; width:calc((100vw - 640px) / 2); min-width:0; pointer-events:none; z-index:0; opacity:0.9; overflow:hidden;}
+  .side-art.left{left:0;}
+  .side-art.right{right:0;}
+  .side-art svg{position:absolute;}
+  @media (max-width:980px){ .side-art{display:none;} }
 </style>
 </head>
 <body>
+
+<div class="side-art left" aria-hidden="true">
+  <svg width="260" height="620" viewBox="0 0 260 620" fill="none" style="left:-30px; bottom:0;">
+    <line x1="130" y1="230" x2="130" y2="558" stroke="#b9c4b3" stroke-width="3" opacity="0.35"/>
+    <ellipse cx="130" cy="560" rx="70" ry="13" stroke="#3f6b3a" stroke-width="3" opacity="0.4"/>
+    <path d="M70 548 Q130 588 190 548" stroke="#3f6b3a" stroke-width="3" opacity="0.4" fill="none"/>
+    <ellipse cx="130" cy="330" rx="55" ry="10" stroke="#b9c4b3" stroke-width="2" opacity="0.3"/>
+    <path d="M130 210 L100 330M130 210 L160 330M130 210 L130 330" stroke="#b9c4b3" stroke-width="1.5" opacity="0.22"/>
+    <path d="M100 330 Q90 420 112 545" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.3" fill="none"/>
+    <path d="M130 330 Q130 430 130 545" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.3" fill="none"/>
+    <path d="M160 330 Q170 420 148 545" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.3" fill="none"/>
+    <circle cx="130" cy="210" r="10" stroke="#8bbf6a" stroke-width="2" opacity="0.35"/>
+  </svg>
+</div>
+<div class="side-art right" aria-hidden="true">
+  <svg width="300" height="700" viewBox="0 0 300 700" fill="none" style="right:-40px; top:70px;">
+    <circle cx="60" cy="90" r="26" stroke="#8bbf6a" stroke-width="2" opacity="0.3"/>
+    <circle cx="60" cy="90" r="15" stroke="#8bbf6a" stroke-width="1.5" opacity="0.22"/>
+    <circle cx="180" cy="220" r="18" stroke="#b9c4b3" stroke-width="2" opacity="0.25"/>
+    <circle cx="100" cy="380" r="34" stroke="#cf9a3e" stroke-width="2" opacity="0.2"/>
+    <circle cx="100" cy="380" r="20" stroke="#cf9a3e" stroke-width="1.5" opacity="0.16"/>
+    <circle cx="210" cy="520" r="15" stroke="#8bbf6a" stroke-width="2" opacity="0.25"/>
+    <circle cx="70" cy="620" r="22" stroke="#b9c4b3" stroke-width="2" opacity="0.22"/>
+    <path d="M60 120 Q90 200 180 220" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.25" fill="none"/>
+    <path d="M180 240 Q140 320 100 352" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.25" fill="none"/>
+    <path d="M100 410 Q160 470 210 520" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.25" fill="none"/>
+  </svg>
+</div>
 
 <div class="hero">
   <svg class="hero-arc" width="220" height="180" viewBox="0 0 220 180" fill="none">

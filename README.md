@@ -7,6 +7,7 @@ Ievieto GitHub repo šos failus **vienā mapē** (piemēram, repo saknē):
 - `index.html`
 - `manifest.json`
 - `sw.js`
+- `hero.jpg`
 - `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`, `favicon-32.png`
 
 ## 1. Publicē ar GitHub Pages
