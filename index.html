@@ -312,7 +312,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 
 let db = null;
@@ -389,23 +389,43 @@ function scheduleSync(){
   syncTimer = setTimeout(pushCurrent, 350);
 }
 
-function connectRoom(code){
+async function connectRoom(code, isCreating){
   if(!db){ setRoomStatus('error', 'Firebase nav konfigurēts (skat. firebase-config.js)'); return; }
   if(unsubscribeRoom){ unsubscribeRoom(); unsubscribeRoom = null; }
-  state.roomCode = code;
   document.getElementById('roomCode').value = code;
-  localStorage.setItem(KEY, JSON.stringify(state));
-  setRoomStatus('live', 'Savienojas ar istabu ' + code + '…');
-  let first = true;
-  unsubscribeRoom = onSnapshot(roomRef(code), (snap)=>{
-    if(!snap.exists()){
-      if(first) pushCurrent();
-      setRoomStatus('live', 'Izveidota jauna istaba ' + code);
-      first = false;
+  setRoomStatus('live', (isCreating ? 'Izveido istabu ' : 'Meklē istabu ') + code + '…');
+
+  let snap;
+  try{
+    snap = await getDoc(roomRef(code));
+  }catch(e){
+    console.warn(e);
+    setRoomStatus('error', 'Nevar savienoties — pārbaudi Firestore Security Rules');
+    return;
+  }
+
+  if(!snap.exists()){
+    if(!isCreating){
+      setRoomStatus('error', 'Istaba ' + code + ' nav atrasta — pārbaudi kodu');
+      updateRoomButton();
       return;
     }
-    first = false;
-    const data = snap.data();
+    state.roomCode = code;
+    localStorage.setItem(KEY, JSON.stringify(state));
+    pushCurrent();
+    setRoomStatus('live', 'Izveidota jauna istaba ' + code);
+  } else {
+    state.roomCode = code;
+    state.current = snap.data().current;
+    localStorage.setItem(KEY, JSON.stringify(state));
+    renderPlayHeader(); renderPlayers(); buildHoles(); buildSummary();
+    setRoomStatus('live', 'Sinhronizēts — istaba ' + code);
+  }
+  updateRoomButton();
+
+  unsubscribeRoom = onSnapshot(roomRef(code), (liveSnap)=>{
+    if(!liveSnap.exists()) return;
+    const data = liveSnap.data();
     const json = JSON.stringify(data.current);
     if(json === lastPushed){ setRoomStatus('live', 'Sinhronizēts — istaba ' + code); return; }
     state.current = data.current;
@@ -604,9 +624,9 @@ document.getElementById('roomConnect').addEventListener('click', ()=>{
   if(state.roomCode){ disconnectRoom(); updateRoomButton(); return; }
   const input = document.getElementById('roomCode');
   const raw = input.value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  const isCreating = raw === '';
   const code = raw || randomCode();
-  connectRoom(code);
-  updateRoomButton();
+  connectRoom(code, isCreating);
 });
 function updateRoomButton(){
   document.getElementById('roomConnect').textContent = state.roomCode ? 'Atvienoties' : 'Sinhronizēt';
@@ -770,7 +790,7 @@ renderStats();
 updateRoomButton();
 if(state.roomCode){
   document.getElementById('roomCode').value = state.roomCode;
-  connectRoom(state.roomCode);
+  connectRoom(state.roomCode, false);
 } else {
   setRoomStatus('idle', 'Nav savienots — rezultāti tikai šajā ierīcē');
 }
