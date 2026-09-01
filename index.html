@@ -384,9 +384,14 @@ function pushCurrent(){
   const payload = JSON.stringify(state.current);
   if(payload === lastPushed) return;
   lastPushed = payload;
-  setDoc(roomRef(state.roomCode), { current: state.current, updatedAt: Date.now() }, { merge:true })
+  withTimeout(setDoc(roomRef(state.roomCode), { current: state.current, updatedAt: Date.now() }, { merge:true }), 12000)
     .then(()=> setRoomStatus('live', 'Sinhronizēts — istaba ' + state.roomCode))
-    .catch((e)=>{ console.warn(e); setRoomStatus('error', 'Rakstīšanas kļūda (' + ((e && (e.code || e.message)) || '?') + ')'); });
+    .catch((e)=>{
+      console.warn(e);
+      const timedOut = e && e.message === 'timeout';
+      const detail = timedOut ? 'taimauts' : (e && (e.code || e.message)) || '?';
+      setRoomStatus('error', 'Rakstīšanas kļūda (' + detail + ')');
+    });
 }
 function scheduleSync(){
   clearTimeout(syncTimer);
@@ -423,9 +428,21 @@ async function connectRoom(code, isCreating){
       updateRoomButton();
       return;
     }
+    try{
+      const payload = JSON.stringify(state.current);
+      lastPushed = payload;
+      await withTimeout(setDoc(roomRef(code), { current: state.current, updatedAt: Date.now() }), 12000);
+    }catch(e){
+      console.warn(e);
+      const timedOut = e && e.message === 'timeout';
+      const detail = timedOut ? 'taimauts' : (e && (e.code || e.message)) || 'nezināma kļūda';
+      alert('DIAGNOSTIKA — istabas izveide neizdevās:\n\n' + detail + '\n\n' + (e && e.stack ? e.stack : JSON.stringify(e)));
+      setRoomStatus('error', 'Neizdevās izveidot istabu (' + detail + ') — mēģini vēlreiz');
+      updateRoomButton();
+      return;
+    }
     state.roomCode = code;
     localStorage.setItem(KEY, JSON.stringify(state));
-    pushCurrent();
     setRoomStatus('live', 'Izveidota jauna istaba ' + code);
   } else {
     state.roomCode = code;
