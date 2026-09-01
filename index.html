@@ -37,32 +37,24 @@ min-height:100vh; padding-bottom:calc(78px + var(--safe-b));
 body > .wrap{background:var(--bg);}
 @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
 
-/* ---------- HERO ---------- */
 .hero{
 background-image:url('hero.jpg');
 background-size:cover;
 background-position:center center;
 background-color:var(--bg-hero);
 border-bottom:1px solid var(--line);
-min-height:400px;
+min-height:260px;
 display:flex; align-items:flex-end;
 padding:0;
 position:relative; overflow:hidden;
 }
 .hero-arc{position:absolute; top:14px; left:-20px; opacity:0.5; pointer-events:none; z-index:1;}
-.hero-inner{position:relative; z-index:1; width:100%; padding:2.2rem 0 1.4rem;}
+.hero-inner{position:relative; z-index:1; width:100%; padding:1.8rem 0 1.2rem;}
 .eyebrow{display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--moss); font-weight:600; margin-bottom:0.5rem; text-shadow:0 1px 8px rgba(0,0,0,0.6);}
-h1{font-family:'Oswald', sans-serif; font-weight:700; font-size:clamp(1.9rem, 8vw, 2.4rem); letter-spacing:-0.01em; margin:0 0 0.3rem; color:var(--paper); line-height:1.02; text-shadow:0 2px 14px rgba(0,0,0,0.55);}
-.subline{color:var(--muted); font-size:13.5px; margin:0; text-shadow:0 1px 8px rgba(0,0,0,0.6);}
+h1{font-family:'Oswald', sans-serif; font-weight:700; font-size:clamp(1.7rem, 8vw, 2.2rem); letter-spacing:-0.01em; margin:0 0 0.3rem; color:var(--paper); line-height:1.02; text-shadow:0 2px 14px rgba(0,0,0,0.55);}
+.subline{color:var(--muted); font-size:13px; margin:0; text-shadow:0 1px 8px rgba(0,0,0,0.6);}
 
-.course-row{display:flex; gap:8px; margin-top:1.1rem; flex-wrap:wrap;}
-.course-row .field{flex:1; min-width:0; position:relative;}
-.course-row .field svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--faint); pointer-events:none; z-index:1;}
-.course-row .field input{padding-left:36px;}
-.course-row .date-field{flex:0 1 130px; min-width:100px;}
-.course-row .date-field input{padding-left:10px; font-size:12px;}
-
-.sync-row{display:flex; gap:8px; margin-top:8px;}
+.sync-row{display:flex; gap:8px; margin-top:14px;}
 .sync-row input{flex:1; min-width:0; font-size:12.5px; text-transform:uppercase; letter-spacing:0.04em;}
 .sync-row input::placeholder{text-transform:none; letter-spacing:normal;}
 .sync-row button{flex:none; width:auto; padding:0 14px; background:var(--moss-deep); border-color:var(--moss); color:var(--paper); font-size:12.5px;}
@@ -71,7 +63,6 @@ h1{font-family:'Oswald', sans-serif; font-weight:700; font-size:clamp(1.9rem, 8v
 .room-dot.live{background:var(--moss); box-shadow:0 0 0 3px rgba(139,191,106,0.25);}
 .room-dot.error{background:var(--brick);}
 
-/* ---------- FIELDS ---------- */
 input[type=text], input[type=number], input[type=date]{
 background:var(--surface); border:1px solid var(--line-strong); color:var(--ink);
 border-radius:9px; font-family:inherit; font-size:13.5px; padding:0 10px; height:38px;
@@ -80,13 +71,52 @@ outline:none; transition:border-color .15s ease; -moz-appearance:textfield; widt
 input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 input:focus{border-color:var(--moss);}
 input::placeholder{color:var(--faint);}
+label.field-label{display:block; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--faint); font-weight:600; margin-bottom:5px;}
 
-/* ---------- TABS CONTENT ---------- */
 .view{display:none;}
 .view.active{display:block;}
 
-/* ---------- PLAYERS ---------- */
-.players{display:flex; flex-wrap:wrap; gap:8px; margin:1.5rem 0 0.6rem;}
+.section-label{display:flex; align-items:center; gap:10px; margin:1.5rem 0 0.7rem; font-family:'Oswald', sans-serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-weight:500;}
+.section-label::after{content:""; flex:1; height:1px; background:var(--line);}
+
+.empty{text-align:center; color:var(--faint); font-size:13px; padding:2.5rem 1rem;}
+
+.actions{display:flex; gap:8px; margin-top:1.3rem;}
+button{font-family:'Inter', sans-serif; font-weight:500; font-size:13px; border-radius:9px; height:40px; cursor:pointer; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); flex:1; transition:background .15s ease, border-color .15s ease;}
+button:active{transform:scale(0.98);}
+button.primary{background:var(--moss-deep); border-color:var(--moss); color:var(--paper);}
+button.danger{color:var(--brick); border-color:rgba(194,86,79,0.3);}
+button.ghost{background:transparent;}
+
+.course-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:10px; display:flex; gap:12px; align-items:center;}
+.course-badge{width:44px; height:44px; border-radius:12px; background:var(--surface-2); border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center; flex:none; color:var(--moss);}
+.course-badge svg{width:22px; height:22px;}
+.course-body{flex:1; min-width:0;}
+.course-name{font-family:'Oswald', sans-serif; font-weight:600; font-size:16px; color:var(--paper); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.course-meta{font-size:11.5px; color:var(--faint); margin-top:2px; display:flex; gap:8px; flex-wrap:wrap;}
+.course-actions{display:flex; flex-direction:column; gap:6px; flex:none;}
+.course-actions button{height:30px; padding:0 10px; font-size:11.5px; flex:none; width:auto;}
+.icon-btn{width:30px; height:30px; padding:0; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center;}
+.icon-btn svg{width:15px; height:15px;}
+
+.add-course-btn{width:100%; border:1px dashed var(--line-strong); background:transparent; color:var(--muted); font-size:13px; height:46px; margin-bottom:0.8rem;}
+
+.course-form{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:1rem;}
+.form-row{display:flex; gap:8px; margin-bottom:10px;}
+.form-row > div{flex:1; min-width:0;}
+.hole-edit-row{display:grid; grid-template-columns:32px 1fr 1fr; gap:8px; align-items:center; margin-bottom:6px;}
+.hole-edit-badge{width:32px; height:32px; border-radius:50%; background:var(--surface-2); border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono', monospace; font-weight:700; font-size:12px; color:var(--chain);}
+.hole-edit-row input{height:34px; font-size:12.5px; text-align:center;}
+.stepper{display:flex; align-items:center; gap:10px;}
+.stepper button{width:26px; height:26px; border-radius:50%; padding:0; font-size:15px; line-height:1; flex:none; background:var(--surface); border:1px solid var(--line-strong); color:var(--ink);}
+.stepper button:disabled{opacity:0.35;}
+.stepper span{font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700; color:var(--paper); min-width:20px; text-align:center;}
+
+.play-course-bar{display:flex; align-items:center; justify-content:space-between; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 14px; margin-top:1.2rem; margin-bottom:0.8rem;}
+.play-course-bar .name{font-family:'Oswald', sans-serif; font-weight:600; font-size:14.5px; color:var(--paper); display:flex; align-items:center; gap:8px;}
+.play-course-bar button{width:auto; flex:none; height:30px; padding:0 12px; font-size:11.5px;}
+
+.players{display:flex; flex-wrap:wrap; gap:8px; margin:0.8rem 0 0.6rem;}
 .player-field{flex:1 1 100px; min-width:100px;}
 .player-field-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;}
 .player-field label{font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--faint); font-weight:600;}
@@ -94,30 +124,43 @@ input::placeholder{color:var(--faint);}
 .player-field input{font-family:'Oswald', sans-serif; font-weight:500; font-size:14px; border-color:var(--pcolor, var(--line-strong));}
 .add-row-btn{width:100%; margin-bottom:0.4rem; border:1px dashed var(--line-strong); background:transparent; color:var(--muted); font-size:12.5px; height:36px;}
 
-.section-label{display:flex; align-items:center; gap:10px; margin:1.7rem 0 0.7rem; font-family:'Oswald', sans-serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-weight:500;}
-.section-label::after{content:""; flex:1; height:1px; background:var(--line);}
-.section-header{display:flex; align-items:center; justify-content:space-between; margin:1.7rem 0 0.7rem; padding-bottom:0.6rem; border-bottom:1px solid var(--line);}
-.section-header .label-text{font-family:'Oswald', sans-serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-weight:500;}
-.stepper{display:flex; align-items:center; gap:10px;}
-.stepper button{width:26px; height:26px; border-radius:50%; padding:0; font-size:15px; line-height:1; flex:none; background:var(--surface); border:1px solid var(--line-strong); color:var(--ink);}
-.stepper button:disabled{opacity:0.35;}
-.stepper span{font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700; color:var(--paper); min-width:20px; text-align:center;}
+.hole-nav{display:flex; align-items:center; justify-content:space-between; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-top:1.4rem;}
+.hole-nav button{width:40px; height:40px; border-radius:50%; padding:0; flex:none; font-size:18px;}
+.hole-nav-mid{text-align:center;}
+.hole-nav-badge{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--faint); margin-bottom:2px;}
+.hole-nav-title{font-family:'Oswald', sans-serif; font-weight:700; font-size:19px; color:var(--paper);}
+.hole-nav-sub{font-size:11.5px; color:var(--muted); margin-top:2px; display:flex; gap:10px; justify-content:center;}
+.hole-nav-sub span{display:flex; align-items:center; gap:4px;}
 
-/* ---------- HOLE LIST ---------- */
-.holes{display:flex; flex-direction:column; gap:6px;}
-.hole-row{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:9px 10px; display:grid; grid-template-columns:32px 42px 1fr 1fr 1fr; gap:7px; align-items:center;}
-.hole-badge{width:32px; height:32px; border-radius:50%; background:var(--surface-2); border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono', monospace; font-weight:700; font-size:12.5px; color:var(--chain);}
-.par-field input{text-align:center; font-family:'JetBrains Mono', monospace; font-weight:600; padding:0; font-size:12.5px; height:32px; background:transparent; border:1px dashed var(--line-strong); color:var(--muted);}
-.score-field input{text-align:center; font-family:'JetBrains Mono', monospace; font-weight:700; padding:0; font-size:14px; height:32px; border-radius:50%;}
-.score-field.under input{border-color:rgba(139,191,106,0.6); color:var(--moss); background:rgba(139,191,106,0.10);}
-.score-field.over input{border-color:rgba(194,86,79,0.55); color:var(--brick); background:rgba(194,86,79,0.09);}
-.score-field.even input{border-color:var(--line-strong); color:var(--ink); border-radius:9px;}
+.hole-dots{display:flex; gap:4px; justify-content:center; margin-top:10px; flex-wrap:wrap;}
+.hole-dot{width:6px; height:6px; border-radius:50%; background:var(--line-strong); flex:none;}
+.hole-dot.done{background:var(--moss);}
+.hole-dot.active{background:var(--paper); width:8px; height:8px;}
 
-.col-labels{display:grid; grid-template-columns:32px 42px 1fr 1fr 1fr; gap:7px; padding:0 10px; margin-bottom:6px;}
-.col-labels span{font-size:9.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--faint); text-align:center; font-weight:600;}
+.player-list{display:flex; flex-direction:column; gap:8px; margin-top:0.9rem;}
+.player-row{display:flex; align-items:center; justify-content:space-between; height:56px; padding:0 14px; border-radius:12px; border:1px solid var(--line); background:var(--card); cursor:pointer;}
+.player-row.under{border-color:rgba(139,191,106,0.5);}
+.player-row.over{border-color:rgba(194,86,79,0.45);}
+.player-row .pname{font-family:'Oswald', sans-serif; font-weight:500; font-size:15px; color:var(--paper); display:flex; align-items:center; gap:8px;}
+.player-row .pval{display:flex; align-items:center; gap:8px;}
+.player-row .pscore{font-family:'JetBrains Mono', monospace; font-size:20px; font-weight:700; color:var(--ink);}
+.player-row .pscore.empty{color:var(--faint);}
+.ob-badge{font-size:10px; font-weight:700; color:var(--brick); background:rgba(194,86,79,0.12); border-radius:6px; padding:2px 6px;}
 
-/* ---------- SUMMARY ---------- */
-.summary{margin-top:1.7rem; display:flex; flex-direction:column; gap:8px;}
+.modal-overlay{position:fixed; inset:0; background:rgba(11,21,16,0.82); z-index:50; display:flex; align-items:flex-end; justify-content:center;}
+.modal-overlay.hidden{display:none;}
+.modal-sheet{width:100%; max-width:640px; background:var(--bg); border-top:1px solid var(--line-strong); border-radius:20px 20px 0 0; padding:1.6rem 1.3rem calc(1.6rem + var(--safe-b));}
+.modal-eyebrow{text-align:center; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--moss); font-weight:600; margin-bottom:6px;}
+.modal-name{text-align:center; font-family:'Oswald', sans-serif; font-size:24px; font-weight:700; color:var(--paper); margin-bottom:22px;}
+.modal-label{text-align:center; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--faint); font-weight:600; margin-bottom:10px;}
+.modal-stepper{display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:22px;}
+.modal-stepper button{width:46px; height:46px; border-radius:50%; padding:0; font-size:21px; flex:none; background:var(--surface); border:1px solid var(--line-strong); color:var(--paper);}
+.modal-stepper .val{font-family:'JetBrains Mono', monospace; font-size:44px; font-weight:700; color:var(--paper); min-width:64px; text-align:center;}
+.modal-stepper.pen button{width:36px; height:36px; font-size:16px; background:var(--card); border-color:rgba(194,86,79,0.35); color:var(--brick);}
+.modal-stepper.pen .val{font-size:24px; color:var(--brick); min-width:36px;}
+.modal-actions{display:flex; gap:8px; margin-top:6px;}
+
+.summary{margin-top:1.5rem; display:flex; flex-direction:column; gap:8px;}
 .summary-card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; position:relative; overflow:hidden;}
 .summary-card.leader{border-color:rgba(139,191,106,0.45);}
 .summary-card.leader::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--moss);}
@@ -130,14 +173,6 @@ input::placeholder{color:var(--faint);}
 .summary-diff.over{color:var(--brick); background:rgba(194,86,79,0.12);}
 .summary-diff.even{color:var(--muted); background:rgba(157,176,159,0.10);}
 
-/* ---------- ACTIONS ---------- */
-.actions{display:flex; gap:8px; margin-top:1.3rem;}
-button{font-family:'Inter', sans-serif; font-weight:500; font-size:13px; border-radius:9px; height:40px; cursor:pointer; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); flex:1; transition:background .15s ease, border-color .15s ease;}
-button:active{transform:scale(0.98);}
-button.primary{background:var(--moss-deep); border-color:var(--moss); color:var(--paper);}
-button.danger{color:var(--brick); border-color:rgba(194,86,79,0.3);}
-
-/* ---------- HISTORY ---------- */
 .round-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:10px;}
 .round-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;}
 .round-loc{font-family:'Oswald', sans-serif; font-weight:600; font-size:15px; color:var(--paper); display:flex; align-items:center; gap:6px;}
@@ -148,9 +183,7 @@ button.danger{color:var(--brick); border-color:rgba(194,86,79,0.3);}
 .round-player.win{background:rgba(139,191,106,0.10); color:var(--moss);}
 .round-player .nm{display:flex; align-items:center; gap:6px; font-weight:500;}
 .round-player .vals{font-family:'JetBrains Mono', monospace; display:flex; gap:8px;}
-.empty{text-align:center; color:var(--faint); font-size:13px; padding:2.5rem 1rem;}
 
-/* ---------- STATS ---------- */
 .stat-row{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:11px 14px; display:flex; align-items:center; gap:12px; margin-bottom:8px;}
 .stat-rank{font-family:'JetBrains Mono', monospace; font-weight:700; font-size:13px; color:var(--faint); width:20px; flex:none;}
 .stat-rank.gold{color:var(--amber);}
@@ -168,22 +201,19 @@ button.danger{color:var(--brick); border-color:rgba(194,86,79,0.3);}
 .loc-stat{font-size:11px; color:var(--muted);}
 .loc-stat b{display:block; font-family:'JetBrains Mono', monospace; font-size:15px; color:var(--paper); font-weight:700;}
 
-/* ---------- BOTTOM NAV ---------- */
 .tabbar{
 position:fixed; left:0; right:0; bottom:0; z-index:20;
 background:rgba(15,28,21,0.92); backdrop-filter:blur(10px);
 border-top:1px solid var(--line);
-padding:8px 12px calc(8px + var(--safe-b));
-display:flex; gap:4px; max-width:640px; margin:0 auto;
+padding:8px 8px calc(8px + var(--safe-b));
+display:flex; gap:2px; max-width:640px; margin:0 auto;
 }
-.tab-btn{flex:1; background:transparent; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--faint); font-size:10.5px; font-weight:600; padding:6px 0; height:auto; border-radius:10px; letter-spacing:0.02em;}
+.tab-btn{flex:1; background:transparent; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--faint); font-size:10px; font-weight:600; padding:6px 0; height:auto; border-radius:10px; letter-spacing:0.01em;}
 .tab-btn.active{color:var(--moss);}
-.tab-btn svg{width:20px; height:20px;}
+.tab-btn svg{width:19px; height:19px;}
 
-@media (min-width:700px){ .hero{min-height:480px;} }
 footer{text-align:center; margin-top:2rem; font-size:11px; color:var(--faint);}
 
-/* ---------- SIDE ART (wide screens only) ---------- */
 .side-art{position:fixed; top:0; bottom:0; width:calc((100vw - 640px) / 2); min-width:0; pointer-events:none; z-index:0; opacity:0.9; overflow:hidden;}
 .side-art.left{left:0;}
 .side-art.right{right:0;}
@@ -198,26 +228,14 @@ footer{text-align:center; margin-top:2rem; font-size:11px; color:var(--faint);}
 <line x1="130" y1="230" x2="130" y2="558" stroke="#b9c4b3" stroke-width="3" opacity="0.35"/>
 <ellipse cx="130" cy="560" rx="70" ry="13" stroke="#3f6b3a" stroke-width="3" opacity="0.4"/>
 <path d="M70 548 Q130 588 190 548" stroke="#3f6b3a" stroke-width="3" opacity="0.4" fill="none"/>
-<ellipse cx="130" cy="330" rx="55" ry="10" stroke="#b9c4b3" stroke-width="2" opacity="0.3"/>
-<path d="M130 210 L100 330M130 210 L160 330M130 210 L130 330" stroke="#b9c4b3" stroke-width="1.5" opacity="0.22"/>
-<path d="M100 330 Q90 420 112 545" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.3" fill="none"/>
-<path d="M130 330 Q130 430 130 545" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.3" fill="none"/>
-<path d="M160 330 Q170 420 148 545" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.3" fill="none"/>
 <circle cx="130" cy="210" r="10" stroke="#8bbf6a" stroke-width="2" opacity="0.35"/>
 </svg>
 </div>
 <div class="side-art right" aria-hidden="true">
 <svg width="300" height="700" viewBox="0 0 300 700" fill="none" style="right:-40px; top:70px;">
 <circle cx="60" cy="90" r="26" stroke="#8bbf6a" stroke-width="2" opacity="0.3"/>
-<circle cx="60" cy="90" r="15" stroke="#8bbf6a" stroke-width="1.5" opacity="0.22"/>
 <circle cx="180" cy="220" r="18" stroke="#b9c4b3" stroke-width="2" opacity="0.25"/>
 <circle cx="100" cy="380" r="34" stroke="#cf9a3e" stroke-width="2" opacity="0.2"/>
-<circle cx="100" cy="380" r="20" stroke="#cf9a3e" stroke-width="1.5" opacity="0.16"/>
-<circle cx="210" cy="520" r="15" stroke="#8bbf6a" stroke-width="2" opacity="0.25"/>
-<circle cx="70" cy="620" r="22" stroke="#b9c4b3" stroke-width="2" opacity="0.22"/>
-<path d="M60 120 Q90 200 180 220" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.25" fill="none"/>
-<path d="M180 240 Q140 320 100 352" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.25" fill="none"/>
-<path d="M100 410 Q160 470 210 520" stroke="#b9c4b3" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.25" fill="none"/>
 </svg>
 </div>
 
@@ -230,18 +248,8 @@ footer{text-align:center; margin-top:2rem; font-size:11px; color:var(--faint);}
 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
 Disku golfa žurnāls
 </div>
-<h1 id="heroTitle">Riekstukalns</h1>
-<p class="subline">18 bedrītes · rezultāti, vēsture un statistika</p>
-
-<div class="course-row">
-<div class="field">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
-<input type="text" id="location" placeholder="Lokācija (piem. Riekstukalns)">
-</div>
-<div class="field date-field">
-<input type="date" id="roundDate">
-</div>
-</div>
+<h1>Riekstukalns</h1>
+<p class="subline">Laukumi · rezultāti · vēsture · statistika</p>
 
 <div class="sync-row">
 <input type="text" id="roomCode" placeholder="Istabas kods (tukšs = izveidot jaunu)" maxlength="10">
@@ -253,21 +261,91 @@ Disku golfa žurnāls
 
 <div class="wrap">
 
-<!-- ================= PLAY VIEW ================= -->
-<section class="view active" id="view-play">
+<section class="view active" id="view-courses">
+<div class="section-label">Laukumi</div>
+<button type="button" id="addCourseBtn" class="add-course-btn">+ Jauns laukums</button>
+
+<div id="courseForm" class="course-form" style="display:none;">
+<div class="form-row">
+<div>
+<label class="field-label">Nosaukums</label>
+<input type="text" id="cfName" placeholder="Piem. Riekstukalns">
+</div>
+</div>
+<div class="form-row">
+<div>
+<label class="field-label">Adrese / vieta</label>
+<input type="text" id="cfAddress" placeholder="Piem. Rīga, Latvija">
+</div>
+</div>
+<div class="form-row">
+<div>
+<label class="field-label">GPS platums (lat)</label>
+<input type="text" id="cfLat" placeholder="56.9496">
+</div>
+<div>
+<label class="field-label">GPS garums (lng)</label>
+<input type="text" id="cfLng" placeholder="24.1052">
+</div>
+</div>
+
+<div class="section-label" style="margin-top:1.1rem;">
+<span>Bedrītes</span>
+</div>
+<div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
+<div class="stepper">
+<button type="button" id="cfHolesMinus" aria-label="Mazāk bedrīšu">−</button>
+<span id="cfHolesCount">18</span>
+<button type="button" id="cfHolesPlus" aria-label="Vairāk bedrīšu">+</button>
+</div>
+</div>
+<div id="cfHolesList"></div>
+
+<div class="actions" style="margin-top:1rem;">
+<button type="button" id="cfCancel">Atcelt</button>
+<button type="button" id="cfSave" class="primary">Saglabāt laukumu</button>
+</div>
+</div>
+
+<div id="courseList"></div>
+</section>
+
+<section class="view" id="view-play">
+
+<div id="playNoCourse" class="empty" style="display:none;">
+Vispirms izvēlies laukumu cilnē "Laukumi", vai sāc brīvu spēli.
+<div class="actions" style="margin-top:1rem;">
+<button type="button" id="goToCourses">Uz laukumiem</button>
+<button type="button" id="startFreeform" class="primary">Sākt brīvu spēli</button>
+</div>
+</div>
+
+<div id="playActive" style="display:none;">
+<div class="play-course-bar">
+<div class="name">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+<span id="playCourseName">Riekstukalns</span>
+</div>
+<button type="button" id="playChangeCourse">Mainīt</button>
+</div>
+
 <div class="players" id="playersRow"></div>
 <button type="button" id="addPlayer" class="add-row-btn">+ Pievienot spēlētāju</button>
 
-<div class="section-header">
-<span class="label-text">Bedrītes</span>
-<div class="stepper">
-<button type="button" id="holesMinus" aria-label="Mazāk bedrīšu">−</button>
-<span id="holesCount">18</span>
-<button type="button" id="holesPlus" aria-label="Vairāk bedrīšu">+</button>
+<div class="hole-nav">
+<button type="button" id="holePrev" aria-label="Iepriekšējā bedrīte">‹</button>
+<div class="hole-nav-mid">
+<div class="hole-nav-badge">Bedrīte <span id="holeIdxLabel">1</span> / <span id="holeTotalLabel">18</span></div>
+<div class="hole-nav-title" id="holeTitleLabel">Par 3</div>
+<div class="hole-nav-sub">
+<span id="holeDistLabel"></span>
 </div>
+<div class="hole-dots" id="holeDots"></div>
 </div>
-<div class="col-labels" id="colLabels"></div>
-<div class="holes" id="holes"></div>
+<button type="button" id="holeNext" aria-label="Nākamā bedrīte">›</button>
+</div>
+
+<div class="player-list" id="holePlayerList"></div>
 
 <div class="section-label">Kopā</div>
 <div class="summary" id="summary"></div>
@@ -276,15 +354,14 @@ Disku golfa žurnāls
 <button id="resetScores">Notīrīt rezultātus</button>
 <button id="saveRound" class="primary">Saglabāt raundu</button>
 </div>
+</div>
 </section>
 
-<!-- ================= HISTORY VIEW ================= -->
 <section class="view" id="view-history">
 <div class="section-label">Spēlētie raundi</div>
 <div id="historyList"></div>
 </section>
 
-<!-- ================= STATS VIEW ================= -->
 <section class="view" id="view-stats">
 <div class="section-label">Līderu tabula</div>
 <div id="leaderboard"></div>
@@ -295,8 +372,38 @@ Disku golfa žurnāls
 <footer>Dati tiek saglabāti šajā ierīcē automātiski</footer>
 </div>
 
+<div class="modal-overlay hidden" id="modalOverlay">
+<div class="modal-sheet">
+<div class="modal-eyebrow" id="modalHoleLabel">Bedrīte 1 · par 3</div>
+<div class="modal-name" id="modalPlayerName">Spēlētājs</div>
+
+<div class="modal-label">Metieni</div>
+<div class="modal-stepper">
+<button type="button" id="modalStrokeMinus">−</button>
+<div class="val" id="modalStrokeVal">3</div>
+<button type="button" id="modalStrokePlus">+</button>
+</div>
+
+<div class="modal-label">Soda punkti (OB)</div>
+<div class="modal-stepper pen">
+<button type="button" id="modalPenMinus">−</button>
+<div class="val" id="modalPenVal">0</div>
+<button type="button" id="modalPenPlus">+</button>
+</div>
+
+<div class="modal-actions">
+<button type="button" id="modalCancel">Atcelt</button>
+<button type="button" id="modalSave" class="primary">Saglabāt</button>
+</div>
+</div>
+</div>
+
 <div class="tabbar">
-<button class="tab-btn active" data-view="play">
+<button class="tab-btn active" data-view="courses">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+Laukumi
+</button>
+<button class="tab-btn" data-view="play">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
 Spēlēt
 </button>
@@ -326,34 +433,50 @@ db = getDatabase(fbApp);
 const DEFAULT_HOLES = 18;
 const MAX_PLAYERS = 6;
 const MAX_HOLES = 27;
-const KEY = 'riekstukalns-app-v3';
+const KEY = 'riekstukalns-app-v4';
 const PLAYER_COLORS = ['#8bbf6a','#cf9a3e','#c2564f','#8bbf6a','#cf9a3e','#c2564f'];
 
 function todayISO(){ return new Date().toISOString().slice(0,10); }
+function uid(){ return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function normalizeHoleArray(arr, len, fallback){
+if(!Array.isArray(arr)) arr = [];
+arr = arr.slice(0, len);
+while(arr.length < len) arr.push(fallback);
+return arr;
+}
 
 function normalizeCurrent(c){
 if(!c || typeof c !== 'object') c = {};
 if(!Array.isArray(c.names) || c.names.length === 0) c.names = ['Spēlētājs 1'];
 if(!Array.isArray(c.par) || c.par.length === 0) c.par = Array(DEFAULT_HOLES).fill(3);
 c.par = c.par.map(v => (typeof v === 'number' && !isNaN(v)) ? v : 3);
+c.dist = normalizeHoleArray(c.dist, c.par.length, null).map(v => (typeof v === 'number' && !isNaN(v)) ? v : null);
 if(!Array.isArray(c.scores)) c.scores = [];
-while(c.scores.length < c.names.length) c.scores.push([]);
-c.scores = c.scores.slice(0, c.names.length).map(row => {
-if(!Array.isArray(row)) row = [];
-row = row.slice(0, c.par.length);
-while(row.length < c.par.length) row.push(null);
-return row;
-});
-if(typeof c.location !== 'string') c.location = 'Riekstukalns';
+c.scores = c.scores.slice(0, c.names.length).map(row => normalizeHoleArray(row, c.par.length, null).map(v => typeof v === 'number' && !isNaN(v) ? v : null));
+while(c.scores.length < c.names.length) c.scores.push(Array(c.par.length).fill(null));
+if(!Array.isArray(c.penalties)) c.penalties = [];
+c.penalties = c.penalties.slice(0, c.names.length).map(row => normalizeHoleArray(row, c.par.length, 0).map(v => typeof v === 'number' && !isNaN(v) ? v : 0));
+while(c.penalties.length < c.names.length) c.penalties.push(Array(c.par.length).fill(0));
+if(typeof c.location !== 'string') c.location = c.courseName || 'Brīvā spēle';
+if(typeof c.courseName !== 'string') c.courseName = c.location || 'Brīvā spēle';
 if(typeof c.date !== 'string') c.date = todayISO();
+if(typeof c.courseId === 'undefined') c.courseId = null;
+if(typeof c.holeIndex !== 'number' || c.holeIndex < 0 || c.holeIndex >= c.par.length) c.holeIndex = 0;
 return c;
 }
 
 function defaultCurrent(){
-return { location:'Riekstukalns', date:todayISO(), names:['Spēlētājs 1','Spēlētājs 2','Spēlētājs 3'],
-par:Array(DEFAULT_HOLES).fill(3), scores:[Array(DEFAULT_HOLES).fill(null),Array(DEFAULT_HOLES).fill(null),Array(DEFAULT_HOLES).fill(null)] };
+return {
+courseId: null, courseName: 'Brīvā spēle', location:'Brīvā spēle', date:todayISO(), holeIndex:0,
+names:['Spēlētājs 1','Spēlētājs 2','Spēlētājs 3'],
+par:Array(DEFAULT_HOLES).fill(3),
+dist:Array(DEFAULT_HOLES).fill(null),
+scores:[Array(DEFAULT_HOLES).fill(null),Array(DEFAULT_HOLES).fill(null),Array(DEFAULT_HOLES).fill(null)],
+penalties:[Array(DEFAULT_HOLES).fill(0),Array(DEFAULT_HOLES).fill(0),Array(DEFAULT_HOLES).fill(0)]
+};
 }
-function defaultState(){ return { current: defaultCurrent(), rounds: [], roomCode: null }; }
+function defaultState(){ return { current: null, rounds: [], roomCode: null, courses: [] }; }
 
 function load(){
 try{
@@ -361,21 +484,20 @@ const raw = localStorage.getItem(KEY);
 if(!raw) return defaultState();
 const parsed = JSON.parse(raw);
 const d = defaultState();
-d.current = Object.assign(d.current, parsed.current||{});
-d.current = normalizeCurrent(d.current);
+d.current = parsed.current ? normalizeCurrent(Object.assign({}, parsed.current)) : null;
 d.rounds = Array.isArray(parsed.rounds) ? parsed.rounds : [];
 d.roomCode = parsed.roomCode || null;
+d.courses = Array.isArray(parsed.courses) ? parsed.courses : [];
 return d;
 }catch(e){ return defaultState(); }
 }
 function persist(){
 localStorage.setItem(KEY, JSON.stringify(state));
-if(state.roomCode) scheduleSync();
+if(state.current && state.roomCode) scheduleSync();
 }
 
 let state = load();
 
-/* ---------------- LIVE ROOM SYNC ---------------- */
 let unsubscribeRoom = null;
 let lastPushed = null;
 let syncTimer = null;
@@ -392,7 +514,7 @@ label.textContent = text;
 }
 
 function pushCurrent(){
-if(!db || !state.roomCode) return;
+if(!db || !state.roomCode || !state.current) return;
 const payload = JSON.stringify(state.current);
 if(payload === lastPushed) return;
 lastPushed = payload;
@@ -423,13 +545,15 @@ if(unsubscribeRoom){ unsubscribeRoom(); unsubscribeRoom = null; }
 document.getElementById('roomCode').value = code;
 setRoomStatus('live', (isCreating ? 'Izveido istabu ' : 'Meklē istabu ') + code + '…');
 
+if(!state.current) state.current = defaultCurrent();
+
 let snap;
 try{
 snap = await withTimeout(get(roomRef(code)), 12000);
 }catch(e){
 console.warn(e);
 const timedOut = e && e.message === 'timeout';
-const detail = timedOut ? 'taimauts' : (e && (e.code || e.message)) || 'nezinā[a kļūda';
+const detail = timedOut ? 'taimauts' : (e && (e.code || e.message)) || 'nezināma kļūda';
 setRoomStatus('error', 'Nevar savienoties (' + detail + ') — mēģini vēlreiz');
 return;
 }
@@ -464,12 +588,9 @@ console.warn('Bojāti dati istabā, izmantoju noklusējuma vērtības.', e);
 state.current = defaultCurrent();
 }
 localStorage.setItem(KEY, JSON.stringify(state));
-try{
-renderPlayHeader(); renderPlayers(); buildHoles(); buildSummary();
-}catch(e){
-console.warn('Render kļūda pēc pievienošanās istabai.', e);
-}
+try{ renderAllPlay(); }catch(e){ console.warn('Render kļūda pēc pievienošanās istabai.', e); }
 setRoomStatus('live', 'Sinhronizēts — istaba ' + code);
+switchView('play');
 }
 updateRoomButton();
 
@@ -481,7 +602,7 @@ if(json === lastPushed){ setRoomStatus('live', 'Sinhronizēts — istaba ' + cod
 try{
 state.current = normalizeCurrent(data.current);
 localStorage.setItem(KEY, JSON.stringify(state));
-renderPlayHeader(); renderPlayers(); buildHoles(); buildSummary();
+renderAllPlay();
 setRoomStatus('live', 'Sinhronizēts — istaba ' + code);
 }catch(e){
 console.warn('Render kļūda dzīvajā atjauninājumā.', e);
@@ -513,17 +634,19 @@ if(!iso) return '';
 const [y,m,d] = iso.split('-');
 return d+'.'+m+'.'+y;
 }
-function gridCols(n){ return '32px 42px repeat('+n+', 1fr)'; }
 
-/* ---------------- compute helpers ---------------- */
 function computeTotals(round){
 const N = round.names.length;
 const totals=Array(N).fill(0), pars=Array(N).fill(0), any=Array(N).fill(false);
 for(let p=0;p<N;p++){
 const row = round.scores[p] || [];
+const penRow = (round.penalties && round.penalties[p]) || [];
 for(let i=0;i<round.par.length;i++){
 const v = row[i];
-if(v!==null && v!==undefined && !isNaN(v)){ totals[p]+=v; pars[p]+=round.par[i]; any[p]=true; }
+if(v!==null && v!==undefined && !isNaN(v)){
+const pen = (penRow[i]!==undefined && !isNaN(penRow[i])) ? penRow[i] : 0;
+totals[p]+=v+pen; pars[p]+=round.par[i]; any[p]=true;
+}
 }
 }
 const diffs = totals.map((t,p)=> any[p] ? t-pars[p] : null);
@@ -534,12 +657,177 @@ diffs.forEach((d,p)=>{ if(any[p] && d===best) winners.push(p); });
 return { totals, diffs, any, winners, anyScored: any.some(Boolean) };
 }
 
-/* ---------------- PLAY VIEW ---------------- */
+const courseListEl = document.getElementById('courseList');
+const courseFormEl = document.getElementById('courseForm');
+let cfHoles = [];
+let editingCourseId = null;
+
+function defaultCourseHoles(n){
+const out = [];
+for(let i=0;i<n;i++) out.push({par:3, dist:null});
+return out;
+}
+
+function renderCfHoles(){
+document.getElementById('cfHolesCount').textContent = cfHoles.length;
+document.getElementById('cfHolesMinus').disabled = cfHoles.length<=1;
+document.getElementById('cfHolesPlus').disabled = cfHoles.length>=MAX_HOLES;
+const list = document.getElementById('cfHolesList');
+list.innerHTML = '';
+cfHoles.forEach((h,i)=>{
+const row = document.createElement('div');
+row.className = 'hole-edit-row';
+row.innerHTML =
+'<div class="hole-edit-badge">'+(i+1)+'</div>'+
+'<input type="number" inputmode="numeric" data-role="cfpar" data-i="'+i+'" value="'+h.par+'" placeholder="Par">'+
+'<input type="number" inputmode="numeric" data-role="cfdist" data-i="'+i+'" value="'+(h.dist===null||h.dist===undefined?'':h.dist)+'" placeholder="Metri">';
+list.appendChild(row);
+});
+}
+document.getElementById('cfHolesList').addEventListener('input', (e)=>{
+const t = e.target;
+const i = +t.dataset.i;
+if(t.dataset.role==='cfpar'){ const v = parseInt(t.value,10); cfHoles[i].par = isNaN(v)?3:v; }
+if(t.dataset.role==='cfdist'){ const v = t.value===''?null:parseInt(t.value,10); cfHoles[i].dist = (v===null||isNaN(v))?null:v; }
+});
+document.getElementById('cfHolesMinus').addEventListener('click', ()=>{
+if(cfHoles.length<=1) return;
+cfHoles.pop();
+renderCfHoles();
+});
+document.getElementById('cfHolesPlus').addEventListener('click', ()=>{
+if(cfHoles.length>=MAX_HOLES) return;
+cfHoles.push({par:3, dist:null});
+renderCfHoles();
+});
+
+function openCourseForm(course){
+editingCourseId = course ? course.id : null;
+document.getElementById('cfName').value = course ? course.name : '';
+document.getElementById('cfAddress').value = course ? course.address||'' : '';
+document.getElementById('cfLat').value = course && course.lat!=null ? course.lat : '';
+document.getElementById('cfLng').value = course && course.lng!=null ? course.lng : '';
+cfHoles = course ? course.holes.map(h=>({par:h.par, dist:h.dist})) : defaultCourseHoles(DEFAULT_HOLES);
+renderCfHoles();
+courseFormEl.style.display = 'block';
+document.getElementById('addCourseBtn').style.display = 'none';
+}
+function closeCourseForm(){
+courseFormEl.style.display = 'none';
+document.getElementById('addCourseBtn').style.display = '';
+editingCourseId = null;
+}
+document.getElementById('addCourseBtn').addEventListener('click', ()=> openCourseForm(null));
+document.getElementById('cfCancel').addEventListener('click', closeCourseForm);
+document.getElementById('cfSave').addEventListener('click', ()=>{
+const name = document.getElementById('cfName').value.trim();
+if(!name){ alert('Ievadi laukuma nosaukumu.'); return; }
+const address = document.getElementById('cfAddress').value.trim();
+const latRaw = document.getElementById('cfLat').value.trim();
+const lngRaw = document.getElementById('cfLng').value.trim();
+const lat = latRaw==='' ? null : parseFloat(latRaw);
+const lng = lngRaw==='' ? null : parseFloat(lngRaw);
+if(editingCourseId){
+const idx = state.courses.findIndex(c=>c.id===editingCourseId);
+if(idx>=0){
+state.courses[idx] = Object.assign({}, state.courses[idx], { name, address, lat: isNaN(lat)?null:lat, lng: isNaN(lng)?null:lng, holes: cfHoles.map(h=>({par:h.par, dist:h.dist})) });
+}
+} else {
+state.courses.push({ id: uid(), name, address, lat: isNaN(lat)?null:lat, lng: isNaN(lng)?null:lng, holes: cfHoles.map(h=>({par:h.par, dist:h.dist})) });
+}
+persist();
+closeCourseForm();
+renderCourses();
+});
+
+function renderCourses(){
+courseListEl.innerHTML = '';
+if(state.courses.length===0){
+courseListEl.innerHTML = '<div class="empty">Vēl nav pievienotu laukumu.<br>Spied "+ Jauns laukums", lai pievienotu pirmo.</div>';
+return;
+}
+state.courses.forEach(course=>{
+const card = document.createElement('div');
+card.className = 'course-card';
+const metaParts = [];
+if(course.address) metaParts.push(escapeHtml(course.address));
+metaParts.push(course.holes.length + ' bedrītes');
+if(course.lat!=null && course.lng!=null) metaParts.push('GPS ✓');
+card.innerHTML =
+'<div class="course-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg></div>'+
+'<div class="course-body"><div class="course-name">'+escapeHtml(course.name)+'</div>'+
+'<div class="course-meta">'+metaParts.map(m=>'<span>'+m+'</span>').join('<span>·</span>')+'</div></div>'+
+'<div class="course-actions">'+
+'<button type="button" class="primary play-course-btn" data-id="'+course.id+'">Spēlēt</button>'+
+'<div style="display:flex; gap:6px;">'+
+'<button type="button" class="icon-btn edit-course-btn" data-id="'+course.id+'" aria-label="Rediģēt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>'+
+'<button type="button" class="icon-btn danger del-course-btn" data-id="'+course.id+'" aria-label="Dzēst"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>'+
+'</div></div>';
+courseListEl.appendChild(card);
+});
+courseListEl.querySelectorAll('.play-course-btn').forEach(btn=>{
+btn.addEventListener('click', ()=> startCourseRound(btn.dataset.id));
+});
+courseListEl.querySelectorAll('.edit-course-btn').forEach(btn=>{
+btn.addEventListener('click', ()=>{
+const course = state.courses.find(c=>c.id===btn.dataset.id);
+if(course) openCourseForm(course);
+});
+});
+courseListEl.querySelectorAll('.del-course-btn').forEach(btn=>{
+btn.addEventListener('click', ()=>{
+if(!confirm('Dzēst šo laukumu?')) return;
+state.courses = state.courses.filter(c=>c.id!==btn.dataset.id);
+persist();
+renderCourses();
+});
+});
+}
+
+function startCourseRound(courseId){
+const course = state.courses.find(c=>c.id===courseId);
+if(!course) return;
+const names = state.current ? state.current.names.slice() : ['Spēlētājs 1','Spēlētājs 2','Spēlētājs 3'];
+state.current = {
+courseId: course.id,
+courseName: course.name,
+location: course.name,
+date: todayISO(),
+holeIndex: 0,
+names: names,
+par: course.holes.map(h=>h.par),
+dist: course.holes.map(h=>h.dist),
+scores: names.map(()=>Array(course.holes.length).fill(null)),
+penalties: names.map(()=>Array(course.holes.length).fill(0))
+};
+persist();
+renderAllPlay();
+switchView('play');
+}
+
+document.getElementById('startFreeform').addEventListener('click', ()=>{
+state.current = defaultCurrent();
+persist();
+renderAllPlay();
+});
+document.getElementById('goToCourses').addEventListener('click', ()=> switchView('courses'));
+document.getElementById('playChangeCourse').addEventListener('click', ()=> switchView('courses'));
+
 const playersRowEl = document.getElementById('playersRow');
-const colLabelsEl = document.getElementById('colLabels');
-const holesEl = document.getElementById('holes');
+const holePlayerListEl = document.getElementById('holePlayerList');
 const summaryEl = document.getElementById('summary');
-const holesCountEl = document.getElementById('holesCount');
+
+function renderAllPlay(){
+const c = state.current;
+document.getElementById('playNoCourse').style.display = c ? 'none' : 'block';
+document.getElementById('playActive').style.display = c ? 'block' : 'none';
+if(!c) return;
+document.getElementById('playCourseName').textContent = c.courseName || 'Brīvā spēle';
+renderPlayers();
+renderHoleNav();
+renderHolePlayerList();
+buildSummary();
+}
 
 function renderPlayers(){
 const c = state.current;
@@ -553,52 +841,138 @@ playersRowEl.innerHTML = c.names.map((name,idx)=>
 ).join('');
 document.getElementById('addPlayer').style.display = c.names.length>=MAX_PLAYERS ? 'none' : '';
 }
-function updateColLabels(){
+document.getElementById('addPlayer').addEventListener('click', ()=>{
 const c = state.current;
-colLabelsEl.style.gridTemplateColumns = gridCols(c.names.length);
-colLabelsEl.innerHTML = '<span>Bed.</span><span>Par</span>' + c.names.map(n=>'<span>'+escapeHtml((n||'').slice(0,8))+'</span>').join('');
-}
-function buildHoles(){
+if(!c || c.names.length>=MAX_PLAYERS) return;
+c.names.push('Spēlētājs '+(c.names.length+1));
+c.scores.push(Array(c.par.length).fill(null));
+c.penalties.push(Array(c.par.length).fill(0));
+persist(); renderPlayers(); renderHolePlayerList(); buildSummary();
+});
+playersRowEl.addEventListener('click',(e)=>{
+const btn = e.target.closest('.player-remove');
+if(!btn) return;
 const c = state.current;
-const N = c.names.length;
-updateColLabels();
-holesCountEl.textContent = c.par.length;
-document.getElementById('holesMinus').disabled = c.par.length<=1;
-document.getElementById('holesPlus').disabled = c.par.length>=MAX_HOLES;
-holesEl.innerHTML='';
+if(c.names.length<=1) return;
+const idx = +btn.dataset.idx;
+c.names.splice(idx,1);
+c.scores.splice(idx,1);
+c.penalties.splice(idx,1);
+persist(); renderPlayers(); renderHolePlayerList(); buildSummary();
+});
+playersRowEl.addEventListener('input',(e)=>{
+const t = e.target;
+if(t.dataset.role!=='pname') return;
+const idx = +t.dataset.idx;
+state.current.names[idx] = t.value;
+renderHolePlayerList(); buildSummary(); persist();
+});
+
+function renderHoleNav(){
+const c = state.current;
+document.getElementById('holeIdxLabel').textContent = c.holeIndex+1;
+document.getElementById('holeTotalLabel').textContent = c.par.length;
+document.getElementById('holeTitleLabel').textContent = 'Par ' + c.par[c.holeIndex];
+const dist = c.dist[c.holeIndex];
+document.getElementById('holeDistLabel').textContent = dist ? dist+' m' : '';
+document.getElementById('holePrev').disabled = c.holeIndex<=0;
+document.getElementById('holeNext').disabled = c.holeIndex>=c.par.length-1;
+const dots = document.getElementById('holeDots');
+dots.innerHTML = '';
 for(let i=0;i<c.par.length;i++){
-const row=document.createElement('div');
-row.className='hole-row';
-row.style.gridTemplateColumns = gridCols(N);
-let scoreCells='';
-for(let p=0;p<N;p++){
-scoreCells += '<div class="score-field even" data-cell="'+p+'-'+i+'"><input type="number" inputmode="numeric" placeholder="–" data-role="score" data-p="'+p+'" data-i="'+i+'"></div>';
+const anyScored = c.scores.some(row=>row[i]!==null && row[i]!==undefined);
+const d = document.createElement('div');
+d.className = 'hole-dot' + (anyScored?' done':'') + (i===c.holeIndex?' active':'');
+dots.appendChild(d);
 }
-row.innerHTML =
-'<div class="hole-badge">'+(i+1)+'</div>'+
-'<div class="par-field"><input type="number" inputmode="numeric" data-role="par" data-i="'+i+'" value="'+c.par[i]+'"></div>'+
-scoreCells;
-holesEl.appendChild(row);
 }
-syncScoreInputs();
-}
-function syncScoreInputs(){
+document.getElementById('holePrev').addEventListener('click', ()=>{
 const c = state.current;
-for(let p=0;p<c.names.length;p++) for(let i=0;i<c.par.length;i++){
-const row = c.scores[p] || [];
-const v = row[i];
-const input = holesEl.querySelector('input[data-role="score"][data-p="'+p+'"][data-i="'+i+'"]');
-if(input) input.value = v===null||v===undefined?'':v;
-const cell = holesEl.querySelector('[data-cell="'+p+'-'+i+'"]');
-if(cell){
-cell.classList.remove('under','over','even');
-if(v===null||v===undefined) cell.classList.add('even');
-else if(v<c.par[i]) cell.classList.add('under');
-else if(v>c.par[i]) cell.classList.add('over');
-else cell.classList.add('even');
+if(c.holeIndex<=0) return;
+c.holeIndex--;
+persist(); renderHoleNav(); renderHolePlayerList();
+});
+document.getElementById('holeNext').addEventListener('click', ()=>{
+const c = state.current;
+if(c.holeIndex>=c.par.length-1) return;
+c.holeIndex++;
+persist(); renderHoleNav(); renderHolePlayerList();
+});
+
+function renderHolePlayerList(){
+const c = state.current;
+const i = c.holeIndex;
+holePlayerListEl.innerHTML = '';
+c.names.forEach((name,p)=>{
+const score = c.scores[p][i];
+const pen = c.penalties[p][i] || 0;
+const done = score!==null && score!==undefined;
+const total = done ? score+pen : null;
+const row = document.createElement('div');
+let cls = 'player-row';
+if(done){ if(total<c.par[i]) cls += ' under'; else if(total>c.par[i]) cls += ' over'; }
+row.className = cls;
+row.innerHTML =
+'<span class="pname">'+escapeHtml(name)+'</span>'+
+'<span class="pval">'+(done && pen>0 ? '<span class="ob-badge">OB×'+pen+'</span>' : '')+
+'<span class="pscore'+(done?'':' empty')+'">'+(done?total:'–')+'</span></span>';
+row.addEventListener('click', ()=> openModal(p));
+holePlayerListEl.appendChild(row);
+});
 }
+
+const modalOverlay = document.getElementById('modalOverlay');
+let modalPlayerIdx = null;
+let modalStroke = 3;
+let modalPen = 0;
+
+function openModal(p){
+const c = state.current;
+const i = c.holeIndex;
+modalPlayerIdx = p;
+modalStroke = c.scores[p][i]!==null && c.scores[p][i]!==undefined ? c.scores[p][i] : c.par[i];
+modalPen = c.penalties[p][i] || 0;
+document.getElementById('modalHoleLabel').textContent = 'Bedrīte ' + (i+1) + ' · par ' + c.par[i];
+document.getElementById('modalPlayerName').textContent = c.names[p];
+document.getElementById('modalStrokeVal').textContent = modalStroke;
+document.getElementById('modalPenVal').textContent = modalPen;
+modalOverlay.classList.remove('hidden');
 }
+function closeModal(){
+modalOverlay.classList.add('hidden');
+modalPlayerIdx = null;
 }
+document.getElementById('modalCancel').addEventListener('click', closeModal);
+document.getElementById('modalStrokeMinus').addEventListener('click', ()=>{
+modalStroke = Math.max(1, modalStroke-1);
+document.getElementById('modalStrokeVal').textContent = modalStroke;
+});
+document.getElementById('modalStrokePlus').addEventListener('click', ()=>{
+modalStroke = modalStroke+1;
+document.getElementById('modalStrokeVal').textContent = modalStroke;
+});
+document.getElementById('modalPenMinus').addEventListener('click', ()=>{
+modalPen = Math.max(0, modalPen-1);
+document.getElementById('modalPenVal').textContent = modalPen;
+});
+document.getElementById('modalPenPlus').addEventListener('click', ()=>{
+modalPen = modalPen+1;
+document.getElementById('modalPenVal').textContent = modalPen;
+});
+document.getElementById('modalSave').addEventListener('click', ()=>{
+if(modalPlayerIdx===null) return;
+const c = state.current;
+const i = c.holeIndex;
+c.scores[modalPlayerIdx][i] = modalStroke;
+c.penalties[modalPlayerIdx][i] = modalPen;
+persist();
+renderHolePlayerList();
+renderHoleNav();
+buildSummary();
+closeModal();
+});
+modalOverlay.addEventListener('click', (e)=>{ if(e.target===modalOverlay) closeModal(); });
+
 function buildSummary(){
 const c = state.current;
 const r = computeTotals(c);
@@ -615,82 +989,12 @@ card.innerHTML =
 summaryEl.appendChild(card);
 }
 }
-function renderPlayHeader(){
-const c = state.current;
-document.getElementById('location').value = c.location;
-document.getElementById('roundDate').value = c.date;
-document.getElementById('heroTitle').textContent = c.location || 'Riekstukalns';
-}
-
-/* ---- events: players ---- */
-document.getElementById('addPlayer').addEventListener('click', ()=>{
-const c = state.current;
-if(c.names.length>=MAX_PLAYERS) return;
-c.names.push('Spēlētājs '+(c.names.length+1));
-c.scores.push(Array(c.par.length).fill(null));
-persist(); renderPlayers(); buildHoles(); buildSummary();
-});
-playersRowEl.addEventListener('click',(e)=>{
-const btn = e.target.closest('.player-remove');
-if(!btn) return;
-const c = state.current;
-if(c.names.length<=1) return;
-const idx = +btn.dataset.idx;
-c.names.splice(idx,1);
-c.scores.splice(idx,1);
-persist(); renderPlayers(); buildHoles(); buildSummary();
-});
-playersRowEl.addEventListener('input',(e)=>{
-const t = e.target;
-if(t.dataset.role!=='pname') return;
-const idx = +t.dataset.idx;
-state.current.names[idx] = t.value;
-updateColLabels(); buildSummary(); persist();
-});
-
-/* ---- events: holes count ---- */
-document.getElementById('holesMinus').addEventListener('click', ()=>{
-const c = state.current;
-if(c.par.length<=1) return;
-c.par.pop();
-c.scores.forEach(a=>a.pop());
-persist(); buildHoles(); buildSummary();
-});
-document.getElementById('holesPlus').addEventListener('click', ()=>{
-const c = state.current;
-if(c.par.length>=MAX_HOLES) return;
-c.par.push(3);
-c.scores.forEach(a=>a.push(null));
-persist(); buildHoles(); buildSummary();
-});
-
-/* ---- events: hole rows (par + score inputs) ---- */
-holesEl.addEventListener('input',(e)=>{
-const t=e.target; const c=state.current;
-if(t.dataset.role==='par'){ const i=+t.dataset.i; const val=parseInt(t.value,10); c.par[i]=isNaN(val)?3:val; }
-else if(t.dataset.role==='score'){ const p=+t.dataset.p,i=+t.dataset.i; const val=t.value===''?null:parseInt(t.value,10); c.scores[p][i]=(val===null||isNaN(val))?null:val; }
-syncScoreInputs(); buildSummary(); persist();
-});
-
-document.getElementById('location').addEventListener('input',(e)=>{ state.current.location=e.target.value; document.getElementById('heroTitle').textContent=e.target.value||'Riekstukalns'; persist(); });
-document.getElementById('roundDate').addEventListener('input',(e)=>{ state.current.date=e.target.value; persist(); });
-
-document.getElementById('roomConnect').addEventListener('click', ()=>{
-if(state.roomCode){ disconnectRoom(); updateRoomButton(); return; }
-const input = document.getElementById('roomCode');
-const raw = input.value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
-const isCreating = raw === '';
-const code = raw || randomCode();
-connectRoom(code, isCreating);
-});
-function updateRoomButton(){
-document.getElementById('roomConnect').textContent = state.roomCode ? 'Atvienoties' : 'Sinhronizēt';
-}
 
 document.getElementById('resetScores').addEventListener('click',()=>{
 const c = state.current;
 c.scores = c.names.map(()=>Array(c.par.length).fill(null));
-syncScoreInputs(); buildSummary(); persist();
+c.penalties = c.names.map(()=>Array(c.par.length).fill(0));
+persist(); renderHolePlayerList(); renderHoleNav(); buildSummary();
 });
 document.getElementById('saveRound').addEventListener('click',()=>{
 const c = state.current;
@@ -699,30 +1003,36 @@ if(!r.anyScored){ alert('Ievadi vismaz vienu rezultātu pirms saglabāšanas.');
 const round = {
 id: Date.now(),
 date: c.date || todayISO(),
-location: c.location || 'Riekstukalns',
+location: c.courseName || c.location || 'Brīvā spēle',
 names: c.names.slice(),
 par: c.par.slice(),
 scores: c.scores.map(a=>a.slice()),
+penalties: c.penalties.map(a=>a.slice()),
 totals: r.totals, diffs: r.diffs, winners: r.winners
 };
 state.rounds.unshift(round);
+const holeLen = c.par.length;
 state.current = {
-location: round.location,
+courseId: c.courseId,
+courseName: c.courseName,
+location: c.courseName,
 date: todayISO(),
-names: round.names.slice(),
-par: round.par.slice(),
-scores: round.names.map(()=>Array(round.par.length).fill(null))
+holeIndex: 0,
+names: c.names.slice(),
+par: c.par.slice(),
+dist: c.dist.slice(),
+scores: c.names.map(()=>Array(holeLen).fill(null)),
+penalties: c.names.map(()=>Array(holeLen).fill(0))
 };
 persist();
-renderPlayHeader(); renderPlayers(); buildHoles(); buildSummary();
+renderAllPlay();
 renderHistory(); renderStats();
 switchView('history');
 });
 
-/* ---------------- HISTORY VIEW ---------------- */
 function renderHistory(){
 const list = document.getElementById('historyList');
-if(state.rounds.length===0){ list.innerHTML='<div class="empty">Vēl nav saglabātu raundu.<br>Aizpildi rezultātus un spied “Saglabāt raundu”.</div>'; return; }
+if(state.rounds.length===0){ list.innerHTML='<div class="empty">Vēl nav saglabātu raundu.<br>Aizpildi rezultātus un spied "Saglabāt raundu".</div>'; return; }
 list.innerHTML='';
 state.rounds.forEach(round=>{
 const card=document.createElement('div');
@@ -752,7 +1062,6 @@ persist(); renderHistory(); renderStats();
 });
 }
 
-/* ---------------- STATS VIEW ---------------- */
 function renderStats(){
 const board = document.getElementById('leaderboard');
 const locBox = document.getElementById('locationStats');
@@ -798,7 +1107,7 @@ board.appendChild(row);
 
 const locs = {};
 state.rounds.forEach(round=>{
-const key = round.location || 'Nezinā[a';
+const key = round.location || 'Nezināma';
 if(!locs[key]) locs[key] = { name:key, rounds:0, diffs:[], best:Infinity, bestWho:'' };
 locs[key].rounds++;
 for(let p=0;p<round.names.length;p++){
@@ -824,7 +1133,6 @@ locBox.appendChild(row);
 });
 }
 
-/* ---------------- TABS ---------------- */
 function switchView(name){
 document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
 document.getElementById('view-'+name).classList.add('active');
@@ -835,11 +1143,20 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 btn.addEventListener('click',()=>switchView(btn.dataset.view));
 });
 
-/* ---------------- INIT ---------------- */
-renderPlayHeader();
-renderPlayers();
-buildHoles();
-buildSummary();
+document.getElementById('roomConnect').addEventListener('click', ()=>{
+if(state.roomCode){ disconnectRoom(); updateRoomButton(); return; }
+const input = document.getElementById('roomCode');
+const raw = input.value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+const isCreating = raw === '';
+const code = raw || randomCode();
+connectRoom(code, isCreating);
+});
+function updateRoomButton(){
+document.getElementById('roomConnect').textContent = state.roomCode ? 'Atvienoties' : 'Sinhronizēt';
+}
+
+renderCourses();
+renderAllPlay();
 renderHistory();
 renderStats();
 updateRoomButton();
