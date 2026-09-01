@@ -320,6 +320,10 @@ try{
   if(firebaseConfig && firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('IELĪMĒ') === -1){
     const fbApp = initializeApp(firebaseConfig);
     db = getFirestore(fbApp);
+    // Best-effort connection warm-up: fire an early read so the transport
+    // (TLS handshake + channel setup) is already established by the time
+    // the person taps "Sinhronizēt". Result and errors are both ignored.
+    getDoc(doc(db, '_warmup', 'ping')).catch(()=>{});
   }
 }catch(e){ console.warn('Firebase nav konfigurēts vai neizdevās ielādēt.', e); }
 
@@ -404,7 +408,7 @@ async function connectRoom(code, isCreating){
 
   let snap;
   try{
-    snap = await withTimeout(getDoc(roomRef(code)), 6000);
+    snap = await withTimeout(getDoc(roomRef(code)), 12000);
   }catch(e){
     console.warn(e);
     const timedOut = e && e.message === 'timeout';

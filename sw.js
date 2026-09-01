@@ -1,4 +1,4 @@
-const CACHE = 'riekstukalns-v10';
+const CACHE = 'riekstukalns-v11';
 const ASSETS = ['./index.html', './manifest.json', './icon-192.png', './icon-512.png', './hero.jpg', './firebase-config.js'];
 
 self.addEventListener('install', (e) => {
