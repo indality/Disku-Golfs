@@ -323,7 +323,7 @@ try{
     // Best-effort connection warm-up: fire an early read so the transport
     // (TLS handshake + channel setup) is already established by the time
     // the person taps "Sinhronizēt". Result and errors are both ignored.
-    getDoc(doc(db, '_warmup', 'ping')).catch(()=>{});
+    getDoc(doc(db, 'rooms', '_warmup')).catch(()=>{});
   }
 }catch(e){ console.warn('Firebase nav konfigurēts vai neizdevās ielādēt.', e); }
 
