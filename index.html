@@ -404,7 +404,7 @@ async function connectRoom(code, isCreating){
 
   let snap;
   try{
-    snap = await withTimeout(getDoc(roomRef(code)), 10000);
+    snap = await withTimeout(getDoc(roomRef(code)), 6000);
   }catch(e){
     console.warn(e);
     const timedOut = e && e.message === 'timeout';
