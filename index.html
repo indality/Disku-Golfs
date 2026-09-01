@@ -382,11 +382,18 @@ function pushCurrent(){
   lastPushed = payload;
   setDoc(roomRef(state.roomCode), { current: state.current, updatedAt: Date.now() }, { merge:true })
     .then(()=> setRoomStatus('live', 'Sinhronizēts — istaba ' + state.roomCode))
-    .catch((e)=>{ console.warn(e); setRoomStatus('error', 'Sinhronizācijas kļūda — pārbaudi Firebase iestatījumus'); });
+    .catch((e)=>{ console.warn(e); setRoomStatus('error', 'Rakstīšanas kļūda (' + ((e && (e.code || e.message)) || '?') + ')'); });
 }
 function scheduleSync(){
   clearTimeout(syncTimer);
   syncTimer = setTimeout(pushCurrent, 350);
+}
+
+function withTimeout(promise, ms){
+  return Promise.race([
+    promise,
+    new Promise((_, reject)=> setTimeout(()=> reject(new Error('timeout')), ms))
+  ]);
 }
 
 async function connectRoom(code, isCreating){
@@ -397,10 +404,12 @@ async function connectRoom(code, isCreating){
 
   let snap;
   try{
-    snap = await getDoc(roomRef(code));
+    snap = await withTimeout(getDoc(roomRef(code)), 10000);
   }catch(e){
     console.warn(e);
-    setRoomStatus('error', 'Nevar savienoties — pārbaudi Firestore Security Rules');
+    const timedOut = e && e.message === 'timeout';
+    const detail = timedOut ? 'taimauts' : (e && (e.code || e.message)) || 'nezināma kļūda';
+    setRoomStatus('error', 'Nevar savienoties (' + detail + ') — mēģini vēlreiz');
     return;
   }
 
@@ -434,7 +443,7 @@ async function connectRoom(code, isCreating){
     setRoomStatus('live', 'Sinhronizēts — istaba ' + code);
   }, (err)=>{
     console.warn(err);
-    setRoomStatus('error', 'Nevar savienoties — pārbaudi Firestore Security Rules');
+    setRoomStatus('error', 'Klausīšanās kļūda (' + ((err && (err.code || err.message)) || '?') + ')');
   });
 }
 function disconnectRoom(){
