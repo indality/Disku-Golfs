@@ -256,6 +256,14 @@ footer{text-align:center; margin-top:2rem; font-size:11px; color:var(--faint);}
 .profile-card{background:linear-gradient(160deg, var(--surface-2), var(--card)); border:1px solid var(--line); border-radius:20px; padding:16px; margin-bottom:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.25);}
 .profile-avatar{width:56px; height:56px; border-radius:50%; background:radial-gradient(circle at 30% 30%, var(--moss), var(--moss-deep)); display:flex; align-items:center; justify-content:center; color:#0f1c15; font-family:'Oswald', sans-serif; font-weight:700; font-size:22px; margin-bottom:12px; box-shadow:0 4px 12px rgba(0,0,0,0.3);}
 
+.auth-overlay{position:fixed; inset:0; z-index:80; background:rgba(11,21,16,0.88); display:flex; align-items:center; justify-content:center; padding:1.2rem;}
+.auth-overlay.hidden{display:none;}
+.auth-sheet{position:relative; width:100%; max-width:360px; background:var(--bg); border:1px solid var(--line-strong); border-radius:22px; padding:26px 22px; box-shadow:0 20px 50px rgba(0,0,0,0.5);}
+.google-btn{width:100%; height:46px; border-radius:14px; background:var(--paper); border:none; color:#1a2b21; font-weight:600; font-size:13.5px; display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer;}
+.auth-divider{display:flex; align-items:center; gap:10px; margin:16px 0;}
+.auth-divider::before, .auth-divider::after{content:""; flex:1; height:1px; background:var(--line-strong);}
+.auth-divider span{font-size:11px; color:var(--faint); text-transform:uppercase; letter-spacing:0.06em;}
+
 .side-art{position:fixed; top:0; bottom:0; width:calc((100vw - 640px) / 2); min-width:0; pointer-events:none; z-index:0; opacity:0.9; overflow:hidden;}
 .side-art.left{left:0;}
 .side-art.right{right:0;}
@@ -420,6 +428,18 @@ Vispirms izvēlies laukumu cilnē "Laukumi", vai sāc brīvu spēli.
 <label class="field-label">Tavs vārds</label>
 <input type="text" id="myNameInput" placeholder="Piem. Aigars">
 </div>
+
+<div class="section-label">Konts</div>
+<div class="profile-card" id="accountCardLoggedOut">
+<div style="font-size:12.5px; color:var(--muted); margin-bottom:12px; line-height:1.5;">Pieteicies, lai laukumi, vēsture un profils saglabātos mākonī un būtu pieejami visās tavās ierīcēs.</div>
+<button type="button" id="openAuthBtn" class="primary" style="width:100%; height:44px;">Pieteikties / Reģistrēties</button>
+</div>
+<div class="profile-card" id="accountCardLoggedIn" style="display:none;">
+<div style="font-size:12.5px; color:var(--muted); margin-bottom:4px;">Pieteicies kā</div>
+<div style="font-family:'Oswald',sans-serif; font-weight:600; font-size:15px; color:var(--paper); margin-bottom:14px;" id="accountEmail">—</div>
+<button type="button" id="signOutBtn" style="width:100%; height:40px;">Izrakstīties</button>
+</div>
+
 <div class="section-label">Tava statistika</div>
 <div id="myStats"></div>
 </section>
@@ -449,6 +469,47 @@ Vispirms izvēlies laukumu cilnē "Laukumi", vai sāc brīvu spēli.
 <div class="modal-actions">
 <button type="button" id="modalCancel">Atcelt</button>
 <button type="button" id="modalSave" class="primary">Saglabāt</button>
+</div>
+</div>
+</div>
+
+<div class="auth-overlay hidden" id="authOverlay">
+<div class="auth-sheet">
+<button type="button" id="authClose" class="focused-exit" style="position:absolute; top:14px; right:16px;">✕</button>
+<div style="text-align:center; margin-bottom:20px;">
+<div class="eyebrow" style="justify-content:center;">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+Disku golfa žurnāls
+</div>
+<h2 style="font-family:'Oswald',sans-serif; font-weight:700; font-size:22px; color:var(--paper); margin:0;" id="authTitle">Sveiks atkal</h2>
+<div style="font-size:12px; color:var(--muted); margin-top:4px;" id="authSubtitle">Pieteicies, lai piekļūtu saviem datiem jebkurā ierīcē</div>
+</div>
+
+<button type="button" id="googleSignInBtn" class="google-btn">
+<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h11.8c-.5 2.6-2 4.9-4.4 6.4v5.3h7.1c4.2-3.9 6.6-9.6 6.6-16.2z"/><path fill="#34A853" d="M24 46c6 0 10.9-2 14.6-5.3l-7.1-5.3c-2 1.3-4.5 2.1-7.5 2.1-5.8 0-10.6-3.9-12.4-9.1H4.3v5.5C8 41.8 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.6 28.4c-.5-1.3-.7-2.7-.7-4.4s.3-3.1.7-4.4v-5.5H4.3C2.8 17.1 2 20.5 2 24s.8 6.9 2.3 9.9l7.3-5.5z"/><path fill="#EA4335" d="M24 10.7c3.3 0 6.2 1.1 8.5 3.3l6.3-6.3C34.9 4.2 30 2 24 2 15.4 2 8 6.2 4.3 14.1l7.3 5.5c1.8-5.2 6.6-9.1 12.4-8.9z"/></svg>
+Turpināt ar Google
+</button>
+
+<div class="auth-divider"><span>vai</span></div>
+
+<div id="authNameField" style="display:none; margin-bottom:10px;">
+<label class="field-label">Tavs vārds</label>
+<input type="text" id="authNameInput" placeholder="Piem. Aigars">
+</div>
+<div style="margin-bottom:10px;">
+<label class="field-label">E-pasts</label>
+<input type="text" id="authEmailInput" placeholder="tavs@epasts.lv">
+</div>
+<div style="margin-bottom:8px;">
+<label class="field-label">Parole</label>
+<input type="password" id="authPasswordInput" placeholder="••••••••">
+</div>
+<div id="authError" style="color:var(--brick); font-size:12px; margin-bottom:10px; display:none;"></div>
+
+<button type="button" id="authSubmitBtn" class="primary" style="width:100%; height:46px; margin-bottom:14px;">Pieteikties</button>
+
+<div style="text-align:center; font-size:12.5px; color:var(--muted);">
+<span id="authToggleText">Vēl nav konta?</span> <a href="#" id="authToggleLink" style="color:var(--moss); font-weight:600; text-decoration:none;">Reģistrēties</a>
 </div>
 </div>
 </div>
@@ -504,13 +565,16 @@ Profils
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import { firebaseConfig } from "./firebase-config.js";
 
 let db = null;
+let auth = null;
 try{
 if(firebaseConfig && firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('IELĪMĒ') === -1 && firebaseConfig.databaseURL){
 const fbApp = initializeApp(firebaseConfig);
 db = getDatabase(fbApp);
+auth = getAuth(fbApp);
 }
 }catch(e){ console.warn('Firebase nav konfigurēts vai neizdevās ielādēt.', e); }
 
@@ -580,9 +644,15 @@ return d;
 function persist(){
 localStorage.setItem(KEY, JSON.stringify(state));
 if(state.current && state.roomCode) scheduleSync();
+if(currentUser) scheduleCloudPush();
 }
 
 let state = load();
+let currentUser = null;
+let cloudUnsub = null;
+let cloudPushTimer = null;
+let lastCloudPushed = null;
+let authMode = 'login';
 
 let unsubscribeRoom = null;
 let lastPushed = null;
@@ -1337,6 +1407,140 @@ box.innerHTML =
 '<div class="stat-row"><div class="stat-body"><div class="stat-name">Vidēji metieni</div></div><div class="stat-num">'+avgStrokes.toFixed(1)+'</div></div>'+
 '<div class="stat-row"><div class="stat-body"><div class="stat-name">Labākais raunds</div></div><div class="stat-num">'+fmtDiff(best)+'</div></div>'+
 '<div class="stat-row"><div class="stat-body"><div class="stat-name">Vidēji pret par</div></div><div class="stat-num">'+fmtDiff(Math.round(avgDiff*10)/10)+'</div></div>';
+}
+
+function openAuthOverlay(){ document.getElementById('authOverlay').classList.remove('hidden'); document.getElementById('authError').style.display='none'; }
+function closeAuthOverlay(){ document.getElementById('authOverlay').classList.add('hidden'); }
+document.getElementById('authClose').addEventListener('click', closeAuthOverlay);
+document.getElementById('openAuthBtn').addEventListener('click', openAuthOverlay);
+document.getElementById('authOverlay').addEventListener('click', (e)=>{ if(e.target.id==='authOverlay') closeAuthOverlay(); });
+
+function renderAuthMode(){
+const signup = authMode==='signup';
+document.getElementById('authTitle').textContent = signup ? 'Izveido kontu' : 'Sveiks atkal';
+document.getElementById('authSubtitle').textContent = signup ? 'Saglabā savus laukumus un rezultātus mākonī' : 'Pieteicies, lai piekļūtu saviem datiem jebkurā ierīcē';
+document.getElementById('authSubmitBtn').textContent = signup ? 'Izveidot kontu' : 'Pieteikties';
+document.getElementById('authToggleText').textContent = signup ? 'Jau ir konts?' : 'Vēl nav konta?';
+document.getElementById('authToggleLink').textContent = signup ? 'Pieteikties' : 'Reģistrēties';
+document.getElementById('authNameField').style.display = signup ? 'block' : 'none';
+document.getElementById('authError').style.display = 'none';
+}
+document.getElementById('authToggleLink').addEventListener('click', (e)=>{
+e.preventDefault();
+authMode = authMode==='login' ? 'signup' : 'login';
+renderAuthMode();
+});
+
+function showAuthError(msg){
+if(!msg) return;
+const el = document.getElementById('authError');
+el.textContent = msg;
+el.style.display = 'block';
+}
+function authErrorMessage(e){
+const code = (e && e.code) || '';
+if(code.includes('email-already-in-use')) return 'Šis e-pasts jau ir reģistrēts.';
+if(code.includes('invalid-email')) return 'Nederīgs e-pasts.';
+if(code.includes('weak-password')) return 'Parole ir par vāju (vismaz 6 simboli).';
+if(code.includes('user-not-found') || code.includes('wrong-password') || code.includes('invalid-credential')) return 'Nepareizs e-pasts vai parole.';
+if(code.includes('popup-closed-by-user')) return '';
+return 'Kļūda: ' + ((e && e.message) || 'nezināma kļūda');
+}
+
+document.getElementById('googleSignInBtn').addEventListener('click', async ()=>{
+if(!auth){ showAuthError('Autentifikācija nav pieejama.'); return; }
+try{
+await signInWithPopup(auth, new GoogleAuthProvider());
+closeAuthOverlay();
+}catch(e){ console.warn(e); showAuthError(authErrorMessage(e)); }
+});
+
+document.getElementById('authSubmitBtn').addEventListener('click', async ()=>{
+if(!auth){ showAuthError('Autentifikācija nav pieejama.'); return; }
+const email = document.getElementById('authEmailInput').value.trim();
+const password = document.getElementById('authPasswordInput').value;
+if(!email || !password){ showAuthError('Ievadi e-pastu un paroli.'); return; }
+try{
+if(authMode==='signup'){
+const name = document.getElementById('authNameInput').value.trim();
+const cred = await createUserWithEmailAndPassword(auth, email, password);
+if(name){
+try{ await updateProfile(cred.user, { displayName: name }); }catch(e){ console.warn(e); }
+state.myName = name; persist(); renderProfile();
+}
+} else {
+await signInWithEmailAndPassword(auth, email, password);
+}
+closeAuthOverlay();
+}catch(e){ console.warn(e); showAuthError(authErrorMessage(e)); }
+});
+
+document.getElementById('signOutBtn').addEventListener('click', async ()=>{
+if(!auth) return;
+try{ await signOut(auth); }catch(e){ console.warn(e); }
+});
+
+function userDataRef(uid){ return ref(db, 'users/' + uid); }
+function scheduleCloudPush(){
+if(!currentUser || !db) return;
+clearTimeout(cloudPushTimer);
+cloudPushTimer = setTimeout(pushCloudData, 500);
+}
+function pushCloudData(){
+if(!currentUser || !db) return;
+const payload = { courses: state.courses, rounds: state.rounds, myName: state.myName, updatedAt: Date.now() };
+const json = JSON.stringify(payload);
+if(json === lastCloudPushed) return;
+lastCloudPushed = json;
+set(userDataRef(currentUser.uid), payload).catch(e=> console.warn('Mākoņa saglabāšanas kļūda', e));
+}
+function mergeArraysById(localArr, cloudArr){
+const map = new Map();
+(cloudArr||[]).forEach(item=> map.set(item.id, item));
+(localArr||[]).forEach(item=>{ if(!map.has(item.id)) map.set(item.id, item); });
+return Array.from(map.values());
+}
+async function handleLogin(user){
+currentUser = user;
+document.getElementById('accountCardLoggedOut').style.display = 'none';
+document.getElementById('accountCardLoggedIn').style.display = 'block';
+document.getElementById('accountEmail').textContent = user.email || user.displayName || 'Pieteicies';
+try{
+const snap = await get(userDataRef(user.uid));
+const cloud = snap.exists() ? snap.val() : null;
+if(cloud){
+state.courses = mergeArraysById(state.courses, cloud.courses);
+state.rounds = mergeArraysById(state.rounds, cloud.rounds);
+if(!state.myName && cloud.myName) state.myName = cloud.myName;
+}
+persist();
+renderCourses(); renderHistory(); renderStats(); renderProfile();
+pushCloudData();
+}catch(e){ console.warn('Neizdevās ielādēt mākoņa datus', e); }
+if(cloudUnsub){ cloudUnsub(); cloudUnsub = null; }
+cloudUnsub = onValue(userDataRef(user.uid), (liveSnap)=>{
+if(!liveSnap.exists()) return;
+const data = liveSnap.val();
+const json = JSON.stringify(data);
+if(json === lastCloudPushed) return;
+lastCloudPushed = json;
+state.courses = Array.isArray(data.courses) ? data.courses : state.courses;
+state.rounds = Array.isArray(data.rounds) ? data.rounds : state.rounds;
+if(typeof data.myName === 'string') state.myName = data.myName;
+localStorage.setItem(KEY, JSON.stringify(state));
+renderCourses(); renderHistory(); renderStats(); renderProfile();
+}, (err)=> console.warn('Mākoņa klausīšanās kļūda', err));
+}
+function handleLogout(){
+currentUser = null;
+if(cloudUnsub){ cloudUnsub(); cloudUnsub = null; }
+document.getElementById('accountCardLoggedOut').style.display = 'block';
+document.getElementById('accountCardLoggedIn').style.display = 'none';
+}
+if(auth){
+onAuthStateChanged(auth, (user)=>{
+if(user) handleLogin(user); else handleLogout();
+});
 }
 
 document.getElementById('roomConnect').addEventListener('click', ()=>{
