@@ -124,6 +124,37 @@ button.ghost{background:transparent;}
 .player-field input{font-family:'Oswald', sans-serif; font-weight:500; font-size:14px; border-color:var(--pcolor, var(--line-strong));}
 .add-row-btn{width:100%; margin-bottom:0.4rem; border:1px dashed var(--line-strong); background:transparent; color:var(--muted); font-size:12.5px; height:36px;}
 
+.active-round-banner{display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--moss-deep); border:1px solid var(--moss); border-radius:12px; padding:12px 14px; margin-bottom:1rem;}
+.active-round-banner span.txt{font-size:12.5px; color:var(--paper); font-weight:500;}
+.active-round-banner button{width:auto; flex:none; height:auto; padding:4px 0; background:transparent; border:none; color:var(--paper); font-weight:700; font-size:12.5px; cursor:pointer;}
+
+.start-round-btn{width:100%; height:50px; font-size:15px; margin-top:1.2rem; margin-bottom:0.4rem;}
+
+.tab-btn{position:relative;}
+.tab-dot{position:absolute; top:2px; right:29%; width:7px; height:7px; border-radius:50%; background:var(--amber); box-shadow:0 0 0 2px var(--bg); display:none;}
+
+.focused-overlay{position:fixed; inset:0; background:var(--bg); z-index:60; display:flex; flex-direction:column; padding:1rem 1.1rem calc(1rem + var(--safe-b)); overflow-y:auto;}
+.focused-overlay.hidden{display:none;}
+.focused-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex:none;}
+.focused-exit{width:auto; flex:none; height:auto; background:transparent; border:none; color:var(--faint); font-size:12px; padding:4px; cursor:pointer;}
+.focused-course-name{font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--moss); font-weight:600;}
+.focused-track{display:flex; align-items:center; gap:4px; overflow-x:auto; padding-bottom:12px; margin-bottom:14px; border-bottom:1px solid var(--line); flex:none;}
+.track-dot{flex:none; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; background:var(--card); color:var(--faint); border:1px solid var(--line-strong);}
+.track-dot.done{background:var(--moss-deep); color:var(--paper); border-color:var(--moss);}
+.track-dot.active{background:var(--paper); color:var(--bg); box-shadow:0 0 0 2px var(--moss);}
+.focused-hole{text-align:center; margin:6px 0 20px; flex:none;}
+.focused-hole-label{font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--faint); margin-bottom:6px;}
+.focused-hole-num{font-family:'Oswald', sans-serif; font-weight:700; font-size:72px; color:var(--paper); line-height:0.9;}
+.focused-hole-meta{display:flex; justify-content:center; gap:24px; margin-top:16px;}
+.focused-meta-item{text-align:center;}
+.focused-meta-label{display:block; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--faint);}
+.focused-meta-val{display:block; font-family:'JetBrains Mono', monospace; font-size:22px; font-weight:700; color:var(--moss); margin-top:2px;}
+.focused-meta-val.dist{color:var(--paper);}
+.focused-meta-sep{width:1px; background:var(--line-strong);}
+.focused-players{display:flex; flex-direction:column; gap:8px; margin-bottom:16px; flex:1;}
+.focused-nav{display:flex; gap:10px; flex:none;}
+.focused-nav button{height:48px; font-size:14px;}
+
 .hole-nav{display:flex; align-items:center; justify-content:space-between; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-top:1.4rem;}
 .hole-nav button{width:40px; height:40px; border-radius:50%; padding:0; flex:none; font-size:18px;}
 .hole-nav-mid{text-align:center;}
@@ -262,6 +293,10 @@ Disku golfa žurnāls
 <div class="wrap">
 
 <section class="view active" id="view-courses">
+<div id="activeRoundBanner" class="active-round-banner" style="display:none;">
+<span class="txt" id="activeRoundText">🏌️ Aktīva spēle</span>
+<button type="button" id="activeRoundResume">Turpināt ›</button>
+</div>
 <div class="section-label">Laukumi</div>
 <button type="button" id="addCourseBtn" class="add-course-btn">+ Jauns laukums</button>
 
@@ -332,20 +367,18 @@ Vispirms izvēlies laukumu cilnē "Laukumi", vai sāc brīvu spēli.
 <div class="players" id="playersRow"></div>
 <button type="button" id="addPlayer" class="add-row-btn">+ Pievienot spēlētāju</button>
 
-<div class="hole-nav">
-<button type="button" id="holePrev" aria-label="Iepriekšējā bedrīte">‹</button>
-<div class="hole-nav-mid">
-<div class="hole-nav-badge">Bedrīte <span id="holeIdxLabel">1</span> / <span id="holeTotalLabel">18</span></div>
-<div class="hole-nav-title" id="holeTitleLabel">Par 3</div>
-<div class="hole-nav-sub">
-<span id="holeDistLabel"></span>
+<div id="freeformHolesSetup" style="display:none;">
+<div class="section-label"><span>Bedrītes</span></div>
+<div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
+<div class="stepper">
+<button type="button" id="ffHolesMinus" aria-label="Mazāk bedrīšu">−</button>
+<span id="ffHolesCount">18</span>
+<button type="button" id="ffHolesPlus" aria-label="Vairāk bedrīšu">+</button>
 </div>
-<div class="hole-dots" id="holeDots"></div>
 </div>
-<button type="button" id="holeNext" aria-label="Nākamā bedrīte">›</button>
 </div>
 
-<div class="player-list" id="holePlayerList"></div>
+<button type="button" id="startRoundBtn" class="primary start-round-btn">▶ Sākt spēli</button>
 
 <div class="section-label">Kopā</div>
 <div class="summary" id="summary"></div>
@@ -398,12 +431,36 @@ Vispirms izvēlies laukumu cilnē "Laukumi", vai sāc brīvu spēli.
 </div>
 </div>
 
+<div class="focused-overlay hidden" id="focusedOverlay">
+<div class="focused-top">
+<button type="button" id="focusedExit" class="focused-exit">✕ Beigt</button>
+<span class="focused-course-name" id="focusedCourseName">Riekstukalns</span>
+<span style="width:60px;"></span>
+</div>
+<div class="focused-track" id="focusedTrack"></div>
+<div class="focused-hole">
+<div class="focused-hole-label" id="focusedHoleLabel">Bedrīte 1 / 18</div>
+<div class="focused-hole-num" id="focusedHoleNum">1</div>
+<div class="focused-hole-meta">
+<div class="focused-meta-item"><span class="focused-meta-label">Par</span><span class="focused-meta-val" id="focusedPar">3</span></div>
+<div class="focused-meta-sep"></div>
+<div class="focused-meta-item"><span class="focused-meta-label">Attālums</span><span class="focused-meta-val dist" id="focusedDist">—</span></div>
+</div>
+</div>
+<div class="focused-players" id="focusedPlayerList"></div>
+<div class="focused-nav">
+<button type="button" id="focusedPrev">‹ Iepriekšējais</button>
+<button type="button" id="focusedNext" class="primary">Nākamā bedrīte ›</button>
+</div>
+</div>
+
 <div class="tabbar">
 <button class="tab-btn active" data-view="courses">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
 Laukumi
 </button>
 <button class="tab-btn" data-view="play">
+<span class="tab-dot" id="tabDot"></span>
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
 Spēlēt
 </button>
@@ -463,12 +520,13 @@ if(typeof c.courseName !== 'string') c.courseName = c.location || 'Brīvā spēl
 if(typeof c.date !== 'string') c.date = todayISO();
 if(typeof c.courseId === 'undefined') c.courseId = null;
 if(typeof c.holeIndex !== 'number' || c.holeIndex < 0 || c.holeIndex >= c.par.length) c.holeIndex = 0;
+if(typeof c.started !== 'boolean') c.started = false;
 return c;
 }
 
 function defaultCurrent(){
 return {
-courseId: null, courseName: 'Brīvā spēle', location:'Brīvā spēle', date:todayISO(), holeIndex:0,
+courseId: null, courseName: 'Brīvā spēle', location:'Brīvā spēle', date:todayISO(), holeIndex:0, started:false,
 names:['Spēlētājs 1','Spēlētājs 2','Spēlētājs 3'],
 par:Array(DEFAULT_HOLES).fill(3),
 dist:Array(DEFAULT_HOLES).fill(null),
@@ -794,6 +852,7 @@ courseName: course.name,
 location: course.name,
 date: todayISO(),
 holeIndex: 0,
+started: false,
 names: names,
 par: course.holes.map(h=>h.par),
 dist: course.holes.map(h=>h.dist),
@@ -814,7 +873,7 @@ document.getElementById('goToCourses').addEventListener('click', ()=> switchView
 document.getElementById('playChangeCourse').addEventListener('click', ()=> switchView('courses'));
 
 const playersRowEl = document.getElementById('playersRow');
-const holePlayerListEl = document.getElementById('holePlayerList');
+const focusedPlayerListEl = document.getElementById('focusedPlayerList');
 const summaryEl = document.getElementById('summary');
 
 function renderAllPlay(){
@@ -824,10 +883,68 @@ document.getElementById('playActive').style.display = c ? 'block' : 'none';
 if(!c) return;
 document.getElementById('playCourseName').textContent = c.courseName || 'Brīvā spēle';
 renderPlayers();
-renderHoleNav();
-renderHolePlayerList();
+document.getElementById('freeformHolesSetup').style.display = c.courseId ? 'none' : 'block';
+document.getElementById('ffHolesCount').textContent = c.par.length;
+document.getElementById('ffHolesMinus').disabled = c.par.length<=1;
+document.getElementById('ffHolesPlus').disabled = c.par.length>=MAX_HOLES;
+document.getElementById('startRoundBtn').textContent = c.started ? '▶ Turpināt spēli' : '▶ Sākt spēli';
 buildSummary();
+updateActiveIndicators();
 }
+
+function updateActiveIndicators(){
+const c = state.current;
+const active = !!(c && c.started);
+document.getElementById('tabDot').style.display = active ? 'block' : 'none';
+const banner = document.getElementById('activeRoundBanner');
+if(active){
+banner.style.display = 'flex';
+document.getElementById('activeRoundText').textContent = '🏌️ Aktīva spēle — ' + (c.courseName||'Brīvā spēle') + ', bedrīte ' + (c.holeIndex+1) + '/' + c.par.length;
+} else {
+banner.style.display = 'none';
+}
+}
+document.getElementById('activeRoundResume').addEventListener('click', ()=> openFocusedMode());
+
+document.getElementById('ffHolesMinus').addEventListener('click', ()=>{
+const c = state.current;
+if(!c || c.courseId || c.par.length<=1) return;
+c.par.pop(); c.dist.pop();
+c.scores.forEach(row=>row.pop());
+c.penalties.forEach(row=>row.pop());
+if(c.holeIndex >= c.par.length) c.holeIndex = c.par.length-1;
+persist(); renderAllPlay();
+});
+document.getElementById('ffHolesPlus').addEventListener('click', ()=>{
+const c = state.current;
+if(!c || c.courseId || c.par.length>=MAX_HOLES) return;
+c.par.push(3); c.dist.push(null);
+c.scores.forEach(row=>row.push(null));
+c.penalties.forEach(row=>row.push(0));
+persist(); renderAllPlay();
+});
+
+document.getElementById('startRoundBtn').addEventListener('click', ()=>{
+const c = state.current;
+if(!c) return;
+c.started = true;
+persist();
+openFocusedMode();
+});
+
+function openFocusedMode(){
+const c = state.current;
+if(!c) return;
+document.getElementById('focusedCourseName').textContent = c.courseName || 'Brīvā spēle';
+renderFocusedTrack();
+renderFocusedHole();
+document.getElementById('focusedOverlay').classList.remove('hidden');
+}
+function closeFocusedMode(){
+document.getElementById('focusedOverlay').classList.add('hidden');
+renderAllPlay();
+}
+document.getElementById('focusedExit').addEventListener('click', closeFocusedMode);
 
 function renderPlayers(){
 const c = state.current;
@@ -847,7 +964,7 @@ if(!c || c.names.length>=MAX_PLAYERS) return;
 c.names.push('Spēlētājs '+(c.names.length+1));
 c.scores.push(Array(c.par.length).fill(null));
 c.penalties.push(Array(c.par.length).fill(0));
-persist(); renderPlayers(); renderHolePlayerList(); buildSummary();
+persist(); renderPlayers(); renderFocusedPlayerList(); buildSummary();
 });
 playersRowEl.addEventListener('click',(e)=>{
 const btn = e.target.closest('.player-remove');
@@ -858,51 +975,58 @@ const idx = +btn.dataset.idx;
 c.names.splice(idx,1);
 c.scores.splice(idx,1);
 c.penalties.splice(idx,1);
-persist(); renderPlayers(); renderHolePlayerList(); buildSummary();
+persist(); renderPlayers(); renderFocusedPlayerList(); buildSummary();
 });
 playersRowEl.addEventListener('input',(e)=>{
 const t = e.target;
 if(t.dataset.role!=='pname') return;
 const idx = +t.dataset.idx;
 state.current.names[idx] = t.value;
-renderHolePlayerList(); buildSummary(); persist();
+renderFocusedPlayerList(); buildSummary(); persist();
 });
 
-function renderHoleNav(){
+function renderFocusedTrack(){
 const c = state.current;
-document.getElementById('holeIdxLabel').textContent = c.holeIndex+1;
-document.getElementById('holeTotalLabel').textContent = c.par.length;
-document.getElementById('holeTitleLabel').textContent = 'Par ' + c.par[c.holeIndex];
-const dist = c.dist[c.holeIndex];
-document.getElementById('holeDistLabel').textContent = dist ? dist+' m' : '';
-document.getElementById('holePrev').disabled = c.holeIndex<=0;
-document.getElementById('holeNext').disabled = c.holeIndex>=c.par.length-1;
-const dots = document.getElementById('holeDots');
-dots.innerHTML = '';
+const track = document.getElementById('focusedTrack');
+track.innerHTML = '';
 for(let i=0;i<c.par.length;i++){
 const anyScored = c.scores.some(row=>row[i]!==null && row[i]!==undefined);
-const d = document.createElement('div');
-d.className = 'hole-dot' + (anyScored?' done':'') + (i===c.holeIndex?' active':'');
-dots.appendChild(d);
+const dot = document.createElement('div');
+dot.className = 'track-dot' + (anyScored?' done':'') + (i===c.holeIndex?' active':'');
+dot.textContent = i+1;
+track.appendChild(dot);
 }
 }
-document.getElementById('holePrev').addEventListener('click', ()=>{
+function renderFocusedHole(){
+const c = state.current;
+document.getElementById('focusedHoleLabel').textContent = 'Bedrīte ' + (c.holeIndex+1) + ' / ' + c.par.length;
+document.getElementById('focusedHoleNum').textContent = c.holeIndex+1;
+document.getElementById('focusedPar').textContent = c.par[c.holeIndex];
+const dist = c.dist[c.holeIndex];
+document.getElementById('focusedDist').textContent = dist ? dist+' m' : '—';
+document.getElementById('focusedPrev').disabled = c.holeIndex<=0;
+const isLast = c.holeIndex>=c.par.length-1;
+document.getElementById('focusedNext').textContent = isLast ? 'Pabeigt ✓' : 'Nākamā bedrīte ›';
+renderFocusedPlayerList();
+updateActiveIndicators();
+persist();
+}
+document.getElementById('focusedPrev').addEventListener('click', ()=>{
 const c = state.current;
 if(c.holeIndex<=0) return;
 c.holeIndex--;
-persist(); renderHoleNav(); renderHolePlayerList();
+renderFocusedTrack(); renderFocusedHole();
 });
-document.getElementById('holeNext').addEventListener('click', ()=>{
+document.getElementById('focusedNext').addEventListener('click', ()=>{
 const c = state.current;
-if(c.holeIndex>=c.par.length-1) return;
+if(c.holeIndex>=c.par.length-1){ closeFocusedMode(); return; }
 c.holeIndex++;
-persist(); renderHoleNav(); renderHolePlayerList();
+renderFocusedTrack(); renderFocusedHole();
 });
-
-function renderHolePlayerList(){
+function renderFocusedPlayerList(){
 const c = state.current;
 const i = c.holeIndex;
-holePlayerListEl.innerHTML = '';
+focusedPlayerListEl.innerHTML = '';
 c.names.forEach((name,p)=>{
 const score = c.scores[p][i];
 const pen = c.penalties[p][i] || 0;
@@ -917,7 +1041,7 @@ row.innerHTML =
 '<span class="pval">'+(done && pen>0 ? '<span class="ob-badge">OB×'+pen+'</span>' : '')+
 '<span class="pscore'+(done?'':' empty')+'">'+(done?total:'–')+'</span></span>';
 row.addEventListener('click', ()=> openModal(p));
-holePlayerListEl.appendChild(row);
+focusedPlayerListEl.appendChild(row);
 });
 }
 
@@ -966,8 +1090,8 @@ const i = c.holeIndex;
 c.scores[modalPlayerIdx][i] = modalStroke;
 c.penalties[modalPlayerIdx][i] = modalPen;
 persist();
-renderHolePlayerList();
-renderHoleNav();
+renderFocusedPlayerList();
+renderFocusedTrack();
 buildSummary();
 closeModal();
 });
@@ -994,7 +1118,7 @@ document.getElementById('resetScores').addEventListener('click',()=>{
 const c = state.current;
 c.scores = c.names.map(()=>Array(c.par.length).fill(null));
 c.penalties = c.names.map(()=>Array(c.par.length).fill(0));
-persist(); renderHolePlayerList(); renderHoleNav(); buildSummary();
+persist(); renderFocusedPlayerList(); renderFocusedTrack(); buildSummary();
 });
 document.getElementById('saveRound').addEventListener('click',()=>{
 const c = state.current;
@@ -1018,6 +1142,7 @@ courseName: c.courseName,
 location: c.courseName,
 date: todayISO(),
 holeIndex: 0,
+started: false,
 names: c.names.slice(),
 par: c.par.slice(),
 dist: c.dist.slice(),
@@ -1025,6 +1150,7 @@ scores: c.names.map(()=>Array(holeLen).fill(null)),
 penalties: c.names.map(()=>Array(holeLen).fill(0))
 };
 persist();
+closeFocusedMode();
 renderAllPlay();
 renderHistory(); renderStats();
 switchView('history');
