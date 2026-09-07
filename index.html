@@ -294,7 +294,7 @@ Disku golfa žurnāls
 <p class="subline">Laukumi · rezultāti · vēsture · statistika</p>
 
 <div class="sync-row">
-<input type="text" id="roomCode" placeholder="Istabas kods (tukšs = izveidot jaunu)" maxlength="10">
+<input type="text" id="roomCode" placeholder="Kods vai parole (tukšs = izveidot jaunu)" maxlength="10">
 <button type="button" id="roomConnect">Sinhronizēt</button>
 </div>
 <div class="room-status" id="roomStatus"><span class="room-dot" id="roomDot"></span><span id="roomStatusText">Nav savienots — rezultāti tikai šajā ierīcē</span></div>
@@ -629,7 +629,7 @@ async function connectRoom(code, isCreating){
 if(!db){ setRoomStatus('error', 'Firebase nav konfigurēts (skat. firebase-config.js — vajag arī databaseURL)'); return; }
 if(unsubscribeRoom){ unsubscribeRoom(); unsubscribeRoom = null; }
 document.getElementById('roomCode').value = code;
-setRoomStatus('live', (isCreating ? 'Izveido istabu ' : 'Meklē istabu ') + code + '…');
+setRoomStatus('live', 'Savienojas — istaba ' + code + '…');
 
 if(!state.current) state.current = defaultCurrent();
 
@@ -1343,9 +1343,8 @@ document.getElementById('roomConnect').addEventListener('click', ()=>{
 if(state.roomCode){ disconnectRoom(); updateRoomButton(); return; }
 const input = document.getElementById('roomCode');
 const raw = input.value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
-const isCreating = raw === '';
 const code = raw || randomCode();
-connectRoom(code, isCreating);
+connectRoom(code, true);
 });
 function updateRoomButton(){
 document.getElementById('roomConnect').textContent = state.roomCode ? 'Atvienoties' : 'Sinhronizēt';
