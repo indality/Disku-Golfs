@@ -1041,6 +1041,7 @@ document.getElementById('focusedOverlay').classList.remove('hidden');
 function closeFocusedMode(){
 document.getElementById('focusedOverlay').classList.add('hidden');
 renderAllPlay();
+switchView('play');
 }
 document.getElementById('focusedExit').addEventListener('click', closeFocusedMode);
 
